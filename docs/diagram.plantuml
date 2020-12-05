@@ -1,0 +1,129 @@
+@startuml temple_of_doom
+/' 
+  This document contains the class diagram for the 'soon' to be world famous console game called:
+
+  ▄▄▄█████▓▓█████  ███▄ ▄███▓ ██▓███   ██▓    ▓█████     ▒█████    █████▒   ▓█████▄  ▒█████   ▒█████   ███▄ ▄███▓
+  ▓  ██▒ ▓▒▓█   ▀ ▓██▒▀█▀ ██▒▓██░  ██▒▓██▒    ▓█   ▀    ▒██▒  ██▒▓██   ▒    ▒██▀ ██▌▒██▒  ██▒▒██▒  ██▒▓██▒▀█▀ ██▒
+  ▒ ▓██░ ▒░▒███   ▓██    ▓██░▓██░ ██▓▒▒██░    ▒███      ▒██░  ██▒▒████ ░    ░██   █▌▒██░  ██▒▒██░  ██▒▓██    ▓██░
+  ░ ▓██▓ ░ ▒▓█  ▄ ▒██    ▒██ ▒██▄█▓▒ ▒▒██░    ▒▓█  ▄    ▒██   ██░░▓█▒  ░    ░▓█▄   ▌▒██   ██░▒██   ██░▒██    ▒██ 
+    ▒██▒ ░ ░▒████▒▒██▒   ░██▒▒██▒ ░  ░░██████▒░▒████▒   ░ ████▓▒░░▒█░       ░▒████▓ ░ ████▓▒░░ ████▓▒░▒██▒   ░██▒
+    ▒ ░░   ░░ ▒░ ░░ ▒░   ░  ░▒▓▒░ ░  ░░ ▒░▓  ░░░ ▒░ ░   ░ ▒░▒░▒░  ▒ ░        ▒▒▓  ▒ ░ ▒░▒░▒░ ░ ▒░▒░▒░ ░ ▒░   ░  ░
+      ░     ░ ░  ░░  ░      ░░▒ ░     ░ ░ ▒  ░ ░ ░  ░     ░ ▒ ▒░  ░          ░ ▒  ▒   ░ ▒ ▒░   ░ ▒ ▒░ ░  ░      ░
+    ░         ░   ░      ░   ░░         ░ ░      ░      ░ ░ ░ ▒   ░ ░        ░ ░  ░ ░ ░ ░ ▒  ░ ░ ░ ▒  ░      ░   
+              ░  ░       ░                ░  ░   ░  ░       ░ ░                ░        ░ ░      ░ ░         ░   
+                                                                            ░                         
+  For information on the syntax, please visit https://plantuml.com/class-diagram!
+'/
+
+/' 1. Enums '/
+
+enum Direction {
+  Up
+  Down
+  Left
+  Right
+}
+
+enum Color {
+  Red
+  Green
+}
+
+/' 2. Interfaces '/
+
+interface Position {
+  - x: Integer
+  - y: Integer
+}
+
+interface IEntity {
+  - position: IPosition
+  + Activate(Player player)
+}
+
+interface IDoorStrategy {
+  + Enter(Player player)
+}
+
+/' 3. Classes '/
+
+class Game
+
+class Player {
+  - hearts: Integer
+  - items: List<IEntity>
+  + Move(Direction direction)
+  + AddItem(IEntity item)
+}
+
+class Room {
+  - id: Integer
+  - width: Integer
+  - height: Integer
+  - doors: List<Door>
+  - items : List<IEntity>
+}
+
+class Door {
+  - nextRoom: Room
+  - location: Direction
+}
+
+class ColoredDoorStrategy {
+  - color: Color
+}
+
+class ToggleDoorStrategy {
+  - closed: Boolean
+}
+
+class ClosingDoorStrategy
+
+class Key {
+  - color: Color
+}
+
+class SankaraStone 
+
+class Trap
+
+class DamageTrapDecorator {
+  - damage: Integer
+}
+
+class DisappearingTrapDecorator
+
+class PressurePlateDecorator {
+  - pressed: Boolean
+}
+
+
+/' Factories '/
+class EntityFactory
+class DoorFactory
+
+/' Relations '/
+
+Key "1" --> Color
+Door "1" --> Direction
+Game "1" --> "1" Player
+Game "1" --> "1...*" Room
+Room "1" --> "1...*" Door
+
+Room "1" --o "*" IEntity
+Player "0...1" --o "*" IEntity
+Door "1" --* "1" IDoorStrategy
+
+Key --|> IEntity
+Trap --|> IEntity
+IEntity --|> Position
+SankaraStone --|> IEntity
+
+DamageTrapDecorator --|> Trap
+PressurePlateDecorator --|> Trap
+DisappearingTrapDecorator --|> Trap
+
+ColoredDoorStrategy --|> IDoorStrategy
+ToggleDoorStrategy --|> IDoorStrategy
+ClosingDoorStrategy --|> IDoorStrategy
+@enduml
