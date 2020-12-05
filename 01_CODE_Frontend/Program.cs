@@ -11,8 +11,9 @@ namespace CODE_Frontend
         {
             Console.OutputEncoding = Encoding.UTF8;
 
-            Console.WindowWidth = 200;
-            Console.WindowHeight = 50;
+            // ? disabled due to not being supported on linux.
+            // Console.WindowWidth = 200;
+            // Console.WindowHeight = 50;
             Console.CursorVisible = false;
 
             GameReader reader = new GameReader();
