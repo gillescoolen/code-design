@@ -1,7 +1,5 @@
 ﻿using CODE_GameLib;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CODE_Frontend
 {
