@@ -87,19 +87,24 @@ class SankaraStone
 
 class Trap
 
-class DamageTrapDecorator {
+interface TrapDecorator
+
+class DamageDecorator {
   - damage: Integer
 }
 
-class DisappearingTrapDecorator
+class DisappearingDecorator
 
-class PressurePlateDecorator {
+class PressureDecorator {
   - pressed: Boolean
 }
 
 
 /' Factories '/
-class EntityFactory
+interface IEntityFactory
+class KeyFactory
+class TrapFactory
+class StoneFactory
 class DoorFactory
 
 /' Relations '/
@@ -119,11 +124,16 @@ Trap --|> IEntity
 IEntity --|> Position
 SankaraStone --|> IEntity
 
-DamageTrapDecorator --|> Trap
-PressurePlateDecorator --|> Trap
-DisappearingTrapDecorator --|> Trap
+TrapDecorator --|> Trap
+DamageDecorator --|> TrapDecorator
+PressureDecorator --|> TrapDecorator
+DisappearingDecorator --|> TrapDecorator
 
 ColoredDoorStrategy --|> IDoorStrategy
 ToggleDoorStrategy --|> IDoorStrategy
 ClosingDoorStrategy --|> IDoorStrategy
+
+KeyFactory --|> IEntityFactory
+TrapFactory --|> IEntityFactory
+StoneFactory --|> IEntityFactory
 @enduml
