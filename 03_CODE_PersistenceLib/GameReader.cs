@@ -73,22 +73,23 @@ namespace CODE_FileSystem
         {
             var parsedConnections = new List<ParsedConnection>();
 
-            foreach (var room in json["connections"])
+            foreach (JObject jconnection in json["connections"])
             {
-                var parsed = room.ToObject<Dictionary<string, int>>();
-
-                var identifiers = parsed.Values.ToList();
-                var sides = parsed.Keys.ToList();
-
+                var connection = jconnection.Children().OfType<JProperty>().ToArray();
                 var parsedConnection = new ParsedConnection
                 {
-                    In = new KeyValuePair<int, Side>(identifiers[0], System.Enum.Parse<Side>(sides[0])),
-                    Out = new KeyValuePair<int, Side>(identifiers[1], System.Enum.Parse<Side>(sides[1]))
+                    In = new KeyValuePair<int, Side>(
+                        connection[0].Value.ToObject<int>(), 
+                        System.Enum.Parse<Side>(connection[0].Name)
+                    ),
+                    Out = new KeyValuePair<int, Side>(
+                        connection[1].Value.ToObject<int>(), 
+                        System.Enum.Parse<Side>(connection[1].Name)
+                    )
                 };
 
                 parsedConnections.Add(parsedConnection);
             }
-
             // Create items in factory
         }
     }
