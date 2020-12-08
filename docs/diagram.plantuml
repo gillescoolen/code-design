@@ -16,7 +16,6 @@
 '/
 
 /' 1. Enums '/
-
 enum Direction {
   Up
   Down
@@ -30,7 +29,6 @@ enum Color {
 }
 
 /' 2. Interfaces '/
-
 interface Position {
   - x: Integer
   - y: Integer
@@ -45,8 +43,11 @@ interface IDoorStrategy {
   + Enter(Player player)
 }
 
-/' 3. Classes '/
+interface TrapDecorator
 
+interface IEntityFactory
+
+/' 3. Classes '/
 class Game
 
 class Player {
@@ -87,7 +88,6 @@ class SankaraStone
 
 class Trap
 
-interface TrapDecorator
 
 class DamageDecorator {
   - damage: Integer
@@ -100,15 +100,13 @@ class PressureDecorator {
 }
 
 
-/' Factories '/
-interface IEntityFactory
+/' 4. Factories '/
 class KeyFactory
 class TrapFactory
 class StoneFactory
 class DoorFactory
 
-/' Relations '/
-
+/' 5. Relations '/
 Key "1" --> Color
 Door "1" --> Direction
 Game "1" --> "1" Player
