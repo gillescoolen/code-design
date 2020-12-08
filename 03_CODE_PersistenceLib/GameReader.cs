@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using CODE_GameLib;
 using Newtonsoft.Json.Linq;
 
@@ -26,7 +27,6 @@ namespace CODE_FileSystem
         {
             var parsedPlayer = json["player"].ToObject<ParsedPlayer>();
 
-            Console.WriteLine(parsedPlayer);
             // Create player in factory
         }
 
@@ -40,7 +40,6 @@ namespace CODE_FileSystem
                 parsedRooms.Add(parsedRoom);
             }
 
-            Console.WriteLine(parsedRooms);
             // Create rooms in factory
         }
 
@@ -67,7 +66,6 @@ namespace CODE_FileSystem
                 parsedItems.Add(parsedRoom.id, parsedItemList);
             }
 
-            Console.WriteLine(parsedItems);
             // Create items in factory
         }
 
@@ -77,10 +75,21 @@ namespace CODE_FileSystem
 
             foreach (var room in json["connections"])
             {
-                var parsedConnection = room.ToObject<Dictionary<string, string>>();
+                var parsed = room.ToObject<Dictionary<string, int>>();
+
+                var identifiers = parsed.Values.ToList();
+                var sides = parsed.Keys.ToList();
+
+                var parsedConnection = new ParsedConnection
+                {
+                    In = new KeyValuePair<int, Side>(identifiers[0], System.Enum.Parse<Side>(sides[0])),
+                    Out = new KeyValuePair<int, Side>(identifiers[1], System.Enum.Parse<Side>(sides[1]))
+                };
+
+                parsedConnections.Add(parsedConnection);
             }
 
-            Console.WriteLine(parsedConnections);
+            // Create items in factory
         }
     }
 }
