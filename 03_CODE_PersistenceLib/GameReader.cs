@@ -11,9 +11,8 @@ namespace CODE_FileSystem
     {
         public Game Read(string filePath)
         {
-            string fileName = "../03_CODE_PersistenceLib/Data/TempleOfDoom.json";
+            JObject json = JObject.Parse(File.ReadAllText(filePath));
 
-            JObject json = JObject.Parse(File.ReadAllText(fileName));
 
             parsePlayer(json);
             parseRooms(json);
