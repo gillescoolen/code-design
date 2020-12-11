@@ -19,9 +19,9 @@ namespace CODE_Frontend
             GameReader reader = new GameReader();
             Game game = reader.Read(@"./Levels/TempleOfDoom.json");
 
-            // GameView gameView = new GameView();
-            // game.Updated += (sender, game) => gameView.Draw(game);
-            // game.Run();
+            GameView gameView = new GameView();
+            game.Updated += (sender, game) => gameView.Draw(game);
+            game.Run();
         }
     }
 }
