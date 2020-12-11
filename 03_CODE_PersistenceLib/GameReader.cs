@@ -14,7 +14,7 @@ namespace CODE_FileSystem
             JObject json = JObject.Parse(File.ReadAllText(filePath));
 
 
-            parsePlayer(json);
+            var player = this.player(json);
             parseRooms(json);
             parseItems(json);
             parseConnections(json);
