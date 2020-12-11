@@ -14,7 +14,7 @@ namespace CODE_FileSystem
             JObject json = JObject.Parse(File.ReadAllText(filePath));
 
             var player = this.player(json);
-            parseRooms(json);
+            var rooms = this.rooms(json);
             parseItems(json);
             parseConnections(json);
             return new Game();
@@ -25,17 +25,15 @@ namespace CODE_FileSystem
             return json["player"].ToObject<Player>();
         }
 
-        private void parseRooms(JObject json)
+        private List<Room> rooms (JObject json)
         {
-            var parsedRooms = new List<ParsedRoom>();
-
+            var parsedRooms = new List<Room>();
             foreach (var room in json["rooms"])
             {
-                var parsedRoom = room.ToObject<ParsedRoom>();
+                var parsedRoom = room.ToObject<Room>();
                 parsedRooms.Add(parsedRoom);
             }
-
-            // Create rooms in factory
+            return parsedRooms;
         }
 
         private void parseItems(JObject json)
