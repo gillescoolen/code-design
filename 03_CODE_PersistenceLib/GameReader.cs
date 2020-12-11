@@ -13,20 +13,16 @@ namespace CODE_FileSystem
         {
             JObject json = JObject.Parse(File.ReadAllText(filePath));
 
-
             var player = this.player(json);
             parseRooms(json);
             parseItems(json);
             parseConnections(json);
-
             return new Game();
         }
 
-        private void parsePlayer(JObject json)
+        private Player player (JObject json)
         {
-            var parsedPlayer = json["player"].ToObject<ParsedPlayer>();
-
-            // Create player in factory
+            return json["player"].ToObject<Player>();
         }
 
         private void parseRooms(JObject json)
