@@ -19,7 +19,11 @@ namespace CODE_FileSystem
             var player = CreatePlayer(json);
             var rooms = CreateRooms(json, player);
 
-            return new Game(player, rooms);
+            var game = new Game(player, rooms);
+
+            GenerateConnections(game, json);
+
+            return game;
         }
 
         private Player CreatePlayer(JObject json)
@@ -54,7 +58,7 @@ namespace CODE_FileSystem
 
                 if (jsonRoom["items"] != null)
                 {
-                    CreateItems(room, jsonRoom["items"]!);
+                    CreateEntities(room, jsonRoom["items"]!);
                 }
 
                 rooms.Add(room);
@@ -64,7 +68,7 @@ namespace CODE_FileSystem
         }
 
 
-        private void CreateItems(Room room, JToken items)
+        private void CreateEntities(Room room, JToken items)
         {
             var factory = new Factory<Entity>("Models.Entities");
 
@@ -78,7 +82,7 @@ namespace CODE_FileSystem
 
                 var x = jsonItem["x"].Value<int>();
                 var y = jsonItem["y"].Value<int>();
-                var tile = room.Tiles.FirstOrDefault(s => s.Key.X == x && s.Key.Y == y);
+                var tile = room.Tiles.FirstOrDefault(tile => tile.Key.X == x && tile.Key.Y == y);
 
                 item.Damage = (jsonItem["damage"] ?? 0).Value<int>();
                 tile.Value.Entity = item;

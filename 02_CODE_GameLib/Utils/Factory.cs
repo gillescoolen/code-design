@@ -17,8 +17,14 @@ namespace CODE_GameLib.Utilities
         {
             var currentType = typeof(Factory<T>);
             var currentTypeNamespace = currentType.Namespace;
-            var type = Type.GetType($"{currentTypeNamespace?.Split(".")[0]}.{nameSpace}.{name}");
+            var type = Type.GetType($"{currentTypeNamespace?.Split(".")[0]}.{nameSpace}.{ConvertString(name)}");
             return type == null ? null : (T)Activator.CreateInstance(type)!;
+        }
+
+        private static string ConvertString(string name)
+        {
+            var textInfo = new CultureInfo("en-US", false);
+            return Regex.Replace(textInfo.TextInfo.ToTitleCase(name), @"\s+", "");
         }
     }
 }

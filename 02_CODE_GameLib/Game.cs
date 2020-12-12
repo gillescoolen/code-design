@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using CODE_GameLib.Models;
+using CODE_GameLib.Models.Entities;
+using CODE_GameLib.Utilities;
 
 namespace CODE_GameLib
 {
-    public class Game
+    public class Game : Provider<Game>
     {
         public event EventHandler<Game> Updated;
         private Player Player { get; set; }
@@ -20,22 +22,6 @@ namespace CODE_GameLib
             Rooms = rooms;
         }
 
-        public void Run()
-        {
-            KeyPressed = Console.ReadKey().Key;
-            Quit = KeyPressed == ConsoleKey.Escape;
-
-            while (!Quit)
-            {
-                Updated?.Invoke(this, this);
-
-                KeyPressed = Console.ReadKey().Key;
-                Quit = KeyPressed == ConsoleKey.Escape;
-            }
-
-            Updated?.Invoke(this, this);
-        }
-
         public Room GetCurrentRoom()
         {
             return Rooms.Find(r => r.GetPlayerPosition() != null)!;
@@ -44,6 +30,66 @@ namespace CODE_GameLib
         public Room GetRoomById(int id)
         {
             return Rooms.FirstOrDefault(r => r.Id == id);
+        }
+        public Entity UseEntity(Tile tile)
+        {
+            if (Player != tile.Player || tile.Entity == null) return null;
+
+            var item = tile.Entity.Interact(Player, GetCurrentRoom());
+
+            Notify(this);
+
+            return item;
+        }
+
+        public bool UseConnection(Tile tile)
+        {
+            if (Player != tile.Player || tile.Connection == null) return false;
+
+            var roomDirection = tile.Connection.Enter(GetCurrentRoom(), Player);
+
+            if (!roomDirection.HasValue) return false;
+
+            var (direction, room) = roomDirection.Value;
+
+            GetCurrentRoom().RemovePlayer();
+
+            room.SpawnPlayer(room.GetSpawnPosition(direction.GetOpposite()), Player);
+
+            Notify(this);
+
+            return true;
+        }
+
+        public int GetPlayerLives()
+        {
+            return Player.Lives;
+        }
+
+        public bool IsOver()
+        {
+            return Player.Lives == 0;
+        }
+
+        public bool HasBeenWon()
+        {
+            return Player.GetAmountOfSankaraStones() == 5;
+        }
+
+        public Entity UseItem(Tile tile)
+        {
+            if (Player != tile.Player || tile.Entity == null) return null;
+            var item = tile.Entity.Interact(Player, GetCurrentRoom());
+
+            Notify(this);
+
+            return item;
+        }
+
+        public void MovePlayer(Position newPosition)
+        {
+            var tile = Player.Move(GetCurrentRoom(), newPosition);
+            if (tile == null || !UseConnection(tile) && UseItem(tile) == null) Notify(this);
         }
     }
 }

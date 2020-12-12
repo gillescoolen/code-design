@@ -6,6 +6,12 @@ namespace CODE_GameLib.Models.Entities
         public int Damage { get; set; }
         public virtual Entity Interact(Player player, Room room)
         {
+            if (room == null) return null;
+
+            player.AddToInventory(this);
+            var tile = room.GetTileByItem(this);
+            tile.Entity = null;
+
             return this;
         }
 

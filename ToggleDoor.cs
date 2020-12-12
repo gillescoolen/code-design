@@ -4,7 +4,7 @@ namespace CODE_GameLib.Models.Doors
     {
         public override string Color { get; set; } = "white";
 
-        public override bool Enter(Player player)
+        public override bool Interact(Player player)
         {
             return Open;
         }

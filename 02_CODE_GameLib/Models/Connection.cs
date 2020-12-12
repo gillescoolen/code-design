@@ -16,10 +16,7 @@ namespace CODE_GameLib.Models
         public Dictionary<Side, Room> Connections { get; } = new Dictionary<Side, Room>();
         public KeyValuePair<Side, Room>? Enter(Room currentRoom, Player player)
         {
-            if (Door != null && !Door.Interact(player))
-            {
-                return null;
-            }
+            if (Door != null && !Door.Enter(player)) return null;
 
             return Connections.FirstOrDefault(c => c.Value != currentRoom);
         }

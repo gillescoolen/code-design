@@ -5,8 +5,9 @@ namespace CODE_GameLib.Models.Doors
         public virtual string Color { get; set; }
         protected bool Open { get; set; } = true;
 
-        public virtual bool Enter(Player player)
+        public virtual bool Interact(Player player)
         {
+            
             return true;
         }
 
@@ -15,9 +16,9 @@ namespace CODE_GameLib.Models.Doors
             Open = !Open;
         }
 
-        public virtual bool CanEnter(Player player)
+        public virtual bool IsInteractable(Player player)
         {
-            return Enter(player);
+            return IsInteractable(player);
         }
     }
 }

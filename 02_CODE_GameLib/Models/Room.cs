@@ -43,6 +43,13 @@ namespace CODE_GameLib.Models
             return Tiles[new Position { X = x, Y = y }];
         }
 
+        public List<Tile> GetTilesByDoor<T>()
+        {
+            return Tiles.Where(tile => tile.Value.Connection?.Door is T)
+                   .Select(tile => tile.Value)
+                   .ToList();
+        }
+
         public Position GetSpawnPosition(Side direction)
         {
             var position = new Position();
@@ -61,6 +68,11 @@ namespace CODE_GameLib.Models
             return position;
         }
 
+        public Tile GetTileByItem(Entity entity)
+        {
+            return Tiles.First(tile => tile.Value.Entity == entity).Value;
+        }
+
         public void AddConnection(Side direction, Connection connection)
         {
             var position = GetSpawnPosition(direction);
@@ -72,14 +84,23 @@ namespace CODE_GameLib.Models
 
         public List<Connection> GetConnections()
         {
-            return Tiles.Where(s => s.Value.Connection != null)
-                .Select(s => s.Value.Connection)
+            return Tiles.Where(tile => tile.Value.Connection != null)
+                .Select(tile => tile.Value.Connection)
                 .ToList()!;
         }
 
         public void SpawnPlayer(Position position, Player player)
         {
             Tiles[position].Player = player;
+        }
+
+        public void RemovePlayer()
+        {
+            var position = GetPlayerPosition();
+            if (position == null) return;
+
+            var tile = GetTileByPosition(position.X, position.Y);
+            tile.Player = null;
         }
 
         public Position GetPlayerPosition()
