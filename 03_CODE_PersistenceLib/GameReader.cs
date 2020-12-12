@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using CODE_Filesystem.Models;
 using CODE_GameLib;
 using CODE_GameLib.Models;
+using CODE_GameLib.Models.Doors;
+using CODE_GameLib.Models.Entities;
+using CODE_GameLib.Utilities;
 using Newtonsoft.Json.Linq;
 
 namespace CODE_FileSystem
@@ -15,77 +16,107 @@ namespace CODE_FileSystem
         {
             JObject json = JObject.Parse(File.ReadAllText(filePath));
 
-            var player = this.player(json);
-            var rooms = this.rooms(json);
-            parseItems(json);
-            parseConnections(json);
-            return new Game();
+            var player = CreatePlayer(json);
+            var rooms = CreateRooms(json, player);
+
+            return new Game(player, rooms);
         }
 
-        private Player player(JObject json)
+        private Player CreatePlayer(JObject json)
         {
-            return json["player"].ToObject<Player>();
-        }
-
-        private List<Room> rooms(JObject json)
-        {
-            var parsedRooms = new List<Room>();
-            foreach (var room in json["rooms"])
+            var jsonPlayer = json["player"];
+            var startRoomId = jsonPlayer["startRoomId"].Value<int>();
+            var startPosition = new Position
             {
-                var parsedRoom = room.ToObject<Room>();
-                parsedRooms.Add(parsedRoom);
-            }
-            return parsedRooms;
+                X = jsonPlayer["startX"]!.Value<int>(),
+                Y = jsonPlayer["startY"]!.Value<int>()
+            };
+
+            return new Player(startRoomId, startPosition, jsonPlayer["lives"]!.Value<int>());
         }
 
-        private void parseItems(JObject json)
+        private List<Room> CreateRooms(JObject json, Player player)
         {
-            var parsedItems = new Dictionary<int, List<ParsedItem>>();
+            var rooms = new List<Room>();
 
-            foreach (var room in json["rooms"])
+            foreach (var jsonRoom in json["rooms"])
             {
-                var parsedRoom = room.ToObject<ParsedRoom>();
+                var id = jsonRoom["id"].Value<int>();
+                var width = jsonRoom["width"].Value<int>();
+                var height = jsonRoom["height"].Value<int>();
 
-                var jsonItems = json["rooms"][parsedRoom.id - 1]["items"];
+                var room = new Room(width, height, id);
 
-                if (jsonItems == null) continue;
-
-                var parsedItemList = new List<ParsedItem>();
-
-                foreach (var item in jsonItems)
+                if (id == player.StartRoomId)
                 {
-                    var parsedItem = item.ToObject<ParsedItem>();
-                    parsedItemList.Add(parsedItem);
+                    room.SpawnPlayer(player.StartPosition, player);
                 }
 
-                parsedItems.Add(parsedRoom.id, parsedItemList);
+                if (jsonRoom["items"] != null)
+                {
+                    CreateItems(room, jsonRoom["items"]!);
+                }
+
+                rooms.Add(room);
             }
 
-            // Create items in factory
+            return rooms;
         }
 
-        private void parseConnections(JObject json)
+
+        private void CreateItems(Room room, JToken items)
         {
-            var parsedConnections = new List<ParsedConnection>();
+            var factory = new Factory<Entity>("Models.Entities");
 
-            foreach (JObject jconnection in json["connections"])
+            foreach (var jsonItem in items)
             {
-                var connection = jconnection.Children().OfType<JProperty>().ToArray();
-                var parsedConnection = new ParsedConnection
-                {
-                    In = new KeyValuePair<int, Side>(
-                        connection[0].Value.ToObject<int>(),
-                        System.Enum.Parse<Side>(connection[0].Name)
-                    ),
-                    Out = new KeyValuePair<int, Side>(
-                        connection[1].Value.ToObject<int>(),
-                        System.Enum.Parse<Side>(connection[1].Name)
-                    )
-                };
+                var name = jsonItem["type"]!.Value<string>();
+                var color = (jsonItem["color"] ?? "").Value<string>();
+                var item = factory.Create(name);
 
-                parsedConnections.Add(parsedConnection);
+                if (item == null) continue;
+
+                var x = jsonItem["x"].Value<int>();
+                var y = jsonItem["y"].Value<int>();
+                var tile = room.Tiles.FirstOrDefault(s => s.Key.X == x && s.Key.Y == y);
+
+                item.Damage = (jsonItem["damage"] ?? 0).Value<int>();
+                tile.Value.Entity = item;
+                tile.Value.Entity.Color = color.Length == 0 ? "white" : color;
             }
-            // Create items in factory
+        }
+
+        private void GenerateConnections(Game game, JToken json)
+        {
+            var factory = new Factory<Door>("Models.Doors");
+
+            foreach (var jsonConnection in json["connections"]!)
+            {
+                var newConnection = new Connection();
+
+                foreach (var property in jsonConnection.Children().OfType<JProperty>())
+                {
+                    var key = property.Name;
+                    var value = property.Value;
+
+                    if (key == "door")
+                    {
+                        var color = (value["color"] ?? "").Value<string>();
+                        newConnection.Door = factory.Create($"{value["type"]} door");
+                        if (newConnection.Door == null) continue;
+                        newConnection.Door.Color = color.Length == 0 ? "white" : color;
+                        continue;
+                    }
+
+                    newConnection.Connections.Add(key.GetByName(), game.GetRoomById(value.Value<int>())!);
+                }
+
+                foreach (var connection in newConnection.Connections)
+                {
+                    var room = game.GetRoomById(connection.Value.Id);
+                    room.AddConnection(connection.Key.GetOpposite(), newConnection);
+                }
+            }
         }
     }
 }

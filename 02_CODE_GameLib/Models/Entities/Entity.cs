@@ -1,10 +1,17 @@
 namespace CODE_GameLib.Models.Entities
 {
-    public abstract class Entity : Position
+    public abstract class Entity : IRenderable
     {
-        public void Activate(Player player)
+        public abstract string Color { get; set; }
+        public int Damage { get; set; }
+        public virtual Entity Interact(Player player, Room room)
         {
-            // add entity to player
+            return this;
+        }
+
+        public virtual bool IsInteractable()
+        {
+            return true;
         }
     }
 }

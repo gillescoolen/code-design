@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>CODE_GameLib</RootNamespace>
-  </PropertyGroup>
+    <PropertyGroup>
+        <LangVersion>9.0</LangVersion>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <RootNamespace>CODE_GameLib</RootNamespace>
+    </PropertyGroup>
 
 </Project>
