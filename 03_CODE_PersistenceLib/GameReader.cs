@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using CODE_Filesystem.Models;
 using CODE_GameLib;
+using CODE_GameLib.Models;
 using Newtonsoft.Json.Linq;
 
 namespace CODE_FileSystem
@@ -11,36 +13,29 @@ namespace CODE_FileSystem
     {
         public Game Read(string filePath)
         {
-            string fileName = "../03_CODE_PersistenceLib/Data/TempleOfDoom.json";
+            JObject json = JObject.Parse(File.ReadAllText(filePath));
 
-            JObject json = JObject.Parse(File.ReadAllText(fileName));
-
-            parsePlayer(json);
-            parseRooms(json);
+            var player = this.player(json);
+            var rooms = this.rooms(json);
             parseItems(json);
             parseConnections(json);
-
             return new Game();
         }
 
-        private void parsePlayer(JObject json)
+        private Player player(JObject json)
         {
-            var parsedPlayer = json["player"].ToObject<ParsedPlayer>();
-
-            // Create player in factory
+            return json["player"].ToObject<Player>();
         }
 
-        private void parseRooms(JObject json)
+        private List<Room> rooms(JObject json)
         {
-            var parsedRooms = new List<ParsedRoom>();
-
+            var parsedRooms = new List<Room>();
             foreach (var room in json["rooms"])
             {
-                var parsedRoom = room.ToObject<ParsedRoom>();
+                var parsedRoom = room.ToObject<Room>();
                 parsedRooms.Add(parsedRoom);
             }
-
-            // Create rooms in factory
+            return parsedRooms;
         }
 
         private void parseItems(JObject json)
@@ -73,22 +68,23 @@ namespace CODE_FileSystem
         {
             var parsedConnections = new List<ParsedConnection>();
 
-            foreach (var room in json["connections"])
+            foreach (JObject jconnection in json["connections"])
             {
-                var parsed = room.ToObject<Dictionary<string, int>>();
-
-                var identifiers = parsed.Values.ToList();
-                var sides = parsed.Keys.ToList();
-
+                var connection = jconnection.Children().OfType<JProperty>().ToArray();
                 var parsedConnection = new ParsedConnection
                 {
-                    In = new KeyValuePair<int, Side>(identifiers[0], System.Enum.Parse<Side>(sides[0])),
-                    Out = new KeyValuePair<int, Side>(identifiers[1], System.Enum.Parse<Side>(sides[1]))
+                    In = new KeyValuePair<int, Side>(
+                        connection[0].Value.ToObject<int>(),
+                        System.Enum.Parse<Side>(connection[0].Name)
+                    ),
+                    Out = new KeyValuePair<int, Side>(
+                        connection[1].Value.ToObject<int>(),
+                        System.Enum.Parse<Side>(connection[1].Name)
+                    )
                 };
 
                 parsedConnections.Add(parsedConnection);
             }
-
             // Create items in factory
         }
     }

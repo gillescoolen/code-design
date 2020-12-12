@@ -14,6 +14,7 @@ namespace CODE_Frontend
         {
             if (!game.Quit)
             {
+                Console.Clear();
                 Console.WriteLine($"\nYou pressed {game.KeyPressed}");
             }
             else

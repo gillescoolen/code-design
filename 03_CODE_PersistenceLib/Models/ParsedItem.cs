@@ -1,8 +1,11 @@
-public class ParsedItem
+namespace CODE_Filesystem.Models
 {
-    public string type { get; set; }
-    public int damage { get; set; }
-    public string color { get; set; }
-    public int x { get; set; }
-    public int y { get; set; }
+    public class ParsedItem
+    {
+        public string type { get; set; }
+        public int damage { get; set; }
+        public string color { get; set; }
+        public int x { get; set; }
+        public int y { get; set; }
+    }
 }

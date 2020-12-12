@@ -1,7 +1,10 @@
-public enum Side
+namespace CODE_GameLib.Models
 {
-    NORTH,
-    EAST,
-    SOUTH,
-    WEST
+    public enum Side
+    {
+        NORTH,
+        EAST,
+        SOUTH,
+        WEST
+    }
 }
