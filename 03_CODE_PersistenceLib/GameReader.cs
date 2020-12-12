@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using CODE_Filesystem.Models;
 using CODE_GameLib;
+using CODE_GameLib.Models;
 using Newtonsoft.Json.Linq;
 
 namespace CODE_FileSystem
@@ -20,12 +22,12 @@ namespace CODE_FileSystem
             return new Game();
         }
 
-        private Player player (JObject json)
+        private Player player(JObject json)
         {
             return json["player"].ToObject<Player>();
         }
 
-        private List<Room> rooms (JObject json)
+        private List<Room> rooms(JObject json)
         {
             var parsedRooms = new List<Room>();
             foreach (var room in json["rooms"])
@@ -72,11 +74,11 @@ namespace CODE_FileSystem
                 var parsedConnection = new ParsedConnection
                 {
                     In = new KeyValuePair<int, Side>(
-                        connection[0].Value.ToObject<int>(), 
+                        connection[0].Value.ToObject<int>(),
                         System.Enum.Parse<Side>(connection[0].Name)
                     ),
                     Out = new KeyValuePair<int, Side>(
-                        connection[1].Value.ToObject<int>(), 
+                        connection[1].Value.ToObject<int>(),
                         System.Enum.Parse<Side>(connection[1].Name)
                     )
                 };

@@ -1,7 +1,11 @@
 using System.Collections.Generic;
+using CODE_GameLib.Models;
 
-public class ParsedConnection
+namespace CODE_Filesystem.Models
 {
-    public KeyValuePair<int, Side> In { get; set; }
-    public KeyValuePair<int, Side> Out { get; set; }
+    public class ParsedConnection
+    {
+        public KeyValuePair<int, Side> In { get; set; }
+        public KeyValuePair<int, Side> Out { get; set; }
+    }
 }

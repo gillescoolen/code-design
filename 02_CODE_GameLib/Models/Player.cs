@@ -1,10 +1,15 @@
 using System.Collections.Generic;
-public class Player
+using CODE_GameLib.Models.Entities;
+
+namespace CODE_GameLib.Models
 {
-    private List<Entity> items;
-    public int startRoomId { get; set; }
-    public int startX { get; set; }
-    public int startY { get; set; }
-    
-    public int lives { get; set; }
+    public class Player
+    {
+        private List<Entity> Items;
+        public int StartRoomId { get; set; }
+        public int StartX { get; set; }
+        public int StartY { get; set; }
+
+        public int Lives { get; set; }
+    }
 }

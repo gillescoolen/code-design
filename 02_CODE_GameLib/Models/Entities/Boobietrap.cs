@@ -1,3 +1,7 @@
-public class Boobietrap : Entity {
-    
+namespace CODE_GameLib.Models.Entities
+{
+    public class Boobietrap : Entity
+    {
+
+    }
 }

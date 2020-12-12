@@ -1,8 +1,10 @@
-public abstract class Entity : IPosition
+namespace CODE_GameLib.Models.Entities
 {
-    public int x { get; set; }
-    public int y { get; set; }
-    public void Activate(Player player) {
-        // add entity to player
+    public abstract class Entity : Position
+    {
+        public void Activate(Player player)
+        {
+            // add entity to player
+        }
     }
 }
