@@ -15,9 +15,4 @@
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
     </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Pastel" Version="2.1.0" />
-    </ItemGroup>
-
 </Project>
