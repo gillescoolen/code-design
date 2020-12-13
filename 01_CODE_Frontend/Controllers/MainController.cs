@@ -15,7 +15,6 @@ namespace CODE_Frontend.Controllers
 
         public override void Update()
         {
-            
         }
 
         public void Start()

@@ -29,45 +29,44 @@ namespace CODE_FileSystem
 
         private Player CreatePlayer(JObject json)
         {
-            var jsonPlayer = json["player"];
-            var startRoomId = jsonPlayer["startRoomId"].Value<int>();
+            var player = json["player"];
+            var startRoomId = player["startRoomId"].Value<int>();
             var startPosition = new Position
             {
-                X = jsonPlayer["startX"]!.Value<int>(),
-                Y = jsonPlayer["startY"]!.Value<int>()
+                X = player["startX"]!.Value<int>(),
+                Y = player["startY"]!.Value<int>()
             };
 
-            return new Player(startRoomId, startPosition, jsonPlayer["lives"]!.Value<int>());
+            return new Player(startRoomId, startPosition, player["lives"]!.Value<int>());
         }
 
         private List<Room> CreateRooms(JObject json, Player player)
         {
             var rooms = new List<Room>();
 
-            foreach (var jsonRoom in json["rooms"])
+            foreach (var room in json["rooms"])
             {
-                var id = jsonRoom["id"].Value<int>();
-                var width = jsonRoom["width"].Value<int>();
-                var height = jsonRoom["height"].Value<int>();
+                var id = room["id"].Value<int>();
+                var width = room["width"].Value<int>();
+                var height = room["height"].Value<int>();
 
-                var room = new Room(width, height, id);
+                var newRoom = new Room(width, height, id);
 
                 if (id == player.StartRoomId)
                 {
-                    room.SpawnPlayer(player.StartPosition, player);
+                    newRoom.SpawnPlayer(player.StartPosition, player);
                 }
 
-                if (jsonRoom["items"] != null)
+                if (room["items"] != null)
                 {
-                    CreateEntities(room, jsonRoom["items"]!);
+                    CreateEntities(newRoom, room["items"]!);
                 }
 
-                rooms.Add(room);
+                rooms.Add(newRoom);
             }
 
             return rooms;
         }
-
 
         private void CreateEntities(Room room, JToken items)
         {
@@ -77,16 +76,16 @@ namespace CODE_FileSystem
             {
                 var name = jsonItem["type"]!.Value<string>();
                 var color = (jsonItem["color"] ?? "").Value<string>();
-                var item = factory.Create(name);
+                var entity = factory.Create(name);
 
-                if (item == null) continue;
+                if (entity == null) continue;
 
                 var x = jsonItem["x"].Value<int>();
                 var y = jsonItem["y"].Value<int>();
                 var tile = room.Tiles.FirstOrDefault(tile => tile.Key.X == x && tile.Key.Y == y);
 
-                item.Damage = (jsonItem["damage"] ?? 0).Value<int>();
-                tile.Value.Entity = item;
+                entity.Damage = (jsonItem["damage"] ?? 0).Value<int>();
+                tile.Value.Entity = entity;
                 if (color.Length > 1) tile.Value.Entity.Color = GetConsoleColorByString(color);
             }
         }
