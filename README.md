@@ -1,2 +1,2 @@
-# deelopdracht-1-the-temple-of-doom-gillescoolen
-deelopdracht-1-the-temple-of-doom-gillescoolen created by GitHub Classroom
+# LET OP! NIELS LAM HEEFT OOK MEEGEWERKT AAN HET PROJECT!
+Ik heb geen admin rights op mijn eigen repo (why?) dus ik kan niels ook niet toevoegen.
