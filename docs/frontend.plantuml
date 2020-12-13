@@ -1,0 +1,68 @@
+@startuml temple_of_doom
+abstract Controller {
+    # Program: Program
+    {abstract} Update()
+}
+
+class Program {
+    - UnSubscriber: IDisposable
+    - Controller: Controller
+    - View: View
+    - IsRunning: Boolean
+    + Game Game
+    + Exit()
+    + OpenController(): Controller
+    + Input()
+    + OnCompleted()
+    + OnError(Exception error)
+    + OnNext(Game value)
+}
+
+class MainController {
+    + Start()
+}
+
+class EndController {
+    + GameHasBeenWon(): Boolean
+    + Quit()
+}
+
+class GameController {
+    + GameHasBeenWon(): Boolean
+    + MovePlayer(Side direction)
+    + GetTiles(): Dictionary<Position, Tile>
+    + GetCurrentRoom(): Room
+    + GetLives(): Integer
+}
+
+abstract View {
+    - _Inputs: Input[]
+    + Inputs: IEnumerable<Input>
+    {abstract} Draw()
+}
+
+class MainView {}
+class EndView {}
+class GameView {
+    - entityCharacters: Dictionary<Entity, char>
+    - doorCharacters: Dictionary<Door, char>
+    - GetCharacter(Tile tile): char
+}
+
+class Input {
+    + Character: Integer
+    + Action: Action
+}
+
+MainController --|> Controller
+EndController --|> Controller
+GameController --|> Controller
+
+MainView --|> View
+EndView --|> View
+GameView --|> View
+
+Program --- Controller
+Program --- View
+View --- Input
+@enduml

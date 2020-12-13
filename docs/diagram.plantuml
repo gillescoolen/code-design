@@ -1,137 +1,186 @@
 @startuml temple_of_doom
-/' 
-  This document contains the class diagram for the 'soon' to be world famous console game called:
-
-  ▄▄▄█████▓▓█████  ███▄ ▄███▓ ██▓███   ██▓    ▓█████     ▒█████    █████▒   ▓█████▄  ▒█████   ▒█████   ███▄ ▄███▓
-  ▓  ██▒ ▓▒▓█   ▀ ▓██▒▀█▀ ██▒▓██░  ██▒▓██▒    ▓█   ▀    ▒██▒  ██▒▓██   ▒    ▒██▀ ██▌▒██▒  ██▒▒██▒  ██▒▓██▒▀█▀ ██▒
-  ▒ ▓██░ ▒░▒███   ▓██    ▓██░▓██░ ██▓▒▒██░    ▒███      ▒██░  ██▒▒████ ░    ░██   █▌▒██░  ██▒▒██░  ██▒▓██    ▓██░
-  ░ ▓██▓ ░ ▒▓█  ▄ ▒██    ▒██ ▒██▄█▓▒ ▒▒██░    ▒▓█  ▄    ▒██   ██░░▓█▒  ░    ░▓█▄   ▌▒██   ██░▒██   ██░▒██    ▒██ 
-    ▒██▒ ░ ░▒████▒▒██▒   ░██▒▒██▒ ░  ░░██████▒░▒████▒   ░ ████▓▒░░▒█░       ░▒████▓ ░ ████▓▒░░ ████▓▒░▒██▒   ░██▒
-    ▒ ░░   ░░ ▒░ ░░ ▒░   ░  ░▒▓▒░ ░  ░░ ▒░▓  ░░░ ▒░ ░   ░ ▒░▒░▒░  ▒ ░        ▒▒▓  ▒ ░ ▒░▒░▒░ ░ ▒░▒░▒░ ░ ▒░   ░  ░
-      ░     ░ ░  ░░  ░      ░░▒ ░     ░ ░ ▒  ░ ░ ░  ░     ░ ▒ ▒░  ░          ░ ▒  ▒   ░ ▒ ▒░   ░ ▒ ▒░ ░  ░      ░
-    ░         ░   ░      ░   ░░         ░ ░      ░      ░ ░ ░ ▒   ░ ░        ░ ░  ░ ░ ░ ░ ▒  ░ ░ ░ ▒  ░      ░   
-              ░  ░       ░                ░  ░   ░  ░       ░ ░                ░        ░ ░      ░ ░         ░   
-                                                                            ░                         
-  For information on the syntax, please visit https://plantuml.com/class-diagram!
-'/
-
-/' 1. Enums '/
-enum Direction {
-  Up
-  Down
-  Left
-  Right
+enum Side {
+  NORTH
+  EAST
+  SOUTH
+  WEST
 }
 
-enum Color {
-  Red
-  Green
+interface IRenderable {
+    + Color: ConsoleColor
 }
 
-/' 2. Interfaces '/
-interface Position {
-  - x: Integer
-  - y: Integer
+class Factory {
+    - Namespace: String
+    - ConvertString(string name): String
+    + Create(string name): <T>
 }
 
-interface IEntity {
-  - position: IPosition
-  + Activate(Player player)
+class Provider {
+    - Observers: List<IObserver<T>>
+    - Notify(T value)
+    + Subscribe(IObserver<T> observer): IDisposable
 }
 
-interface IDoorStrategy {
-  + Enter(Player player)
+class UnSubscriber {
+    - Observers: List<IObserver<T>>
+    - Observer: IObserver<T>
+    + Dispose()
 }
 
-interface TrapDecorator
+class Game {
+    - Rlayer: Player
+    - Rooms: List<Room>
+    + GetCurrentRoom(): Room
+    + GetRoomById(): Room
+    + UseEntity(Tile tile): Entity
+    + UseConnection(Tile tile): Boolean
+    + GetPlayerLives(): Integer
+    + IsOver(): Boolean
+    + HasBeenWon(): Boolean
+    + UseEntity(Tile tile): Entity
+    + MovePlayer(Position newPosition)
+}
 
-interface IEntityFactory
-
-/' 3. Classes '/
-class Game
-
-class Player {
-  - hearts: Integer
-  - items: List<IEntity>
-  + Move(Direction direction)
-  + AddItem(IEntity item)
+class Tile {
+    + Player: Player
+    + Entity: Entity
+    + Connection: Connection
+    + Position: Position
+    + GetVisual(): IRenderable
 }
 
 class Room {
-  - id: Integer
-  - width: Integer
-  - height: Integer
-  - doors: List<Door>
-  - items : List<IEntity>
+    + Id: Integer
+    + Width: Integer
+    + Height: Integer
+    + Tiles: Dictionary<Position, Tile>
+    - GenerateRoom()
+    - IsWall()
+    + GetTileByPosition(int x, int y): Tile
+    + GetTilesByDoor<T>(): List<Tile> 
+    + GetSpawnPosition(Side direction): Position
+    + GetTileByItem(Entity entity): Tile
+    + AddConnection(Side direction, Connection connection)
+    + GetConnections(): List<Connection>
+    + SpawnPlayer(Position position, Player player)
+    + GetPlayerPosition(): Position
+    + RemovePlayer()
 }
 
-class Door {
-  - nextRoom: Room
-  - location: Direction
+class Position {
+    + X: Integer
+    + Y: Integer
+    # Equals(Position other): Boolean
 }
 
-class ColoredDoorStrategy {
-  - color: Color
+class Player {
+    - Inventory: List<Entity>
+    + StartPosition: Position
+    + StartRoomId: Integer
+    + Lives: Integer
+    + GetInventory<T>
+    + Move(Room room, Position movePosition): Tile
+    + Hurt(int damage): Integer
+    + AddToInventory(Entity item)
+    + GetAmountOfSankaraStones(): Integer
 }
 
-class ToggleDoorStrategy {
-  - closed: Boolean
+class Connection {
+    + Door: Door
+    + Connections: Dictionary<Side, Room>
+    + Enter(Room currentRoom, Player player): KeyValuePair<Side, Room>
 }
 
-class ClosingDoorStrategy
-
-class Key {
-  - color: Color
+abstract Entity {
+    + Damage: Integer
+    + Interact(Player player, Room room): Entity
+    + IsInteractable(): Boolean
 }
 
-class SankaraStone 
+class Wall {}
+class SankaraStone {}
+class PressurePlate {}
+class Key {}
+class Boobietrap {}
+class DisappearingBoobietrap {}
 
-class Trap
-
-
-class DamageDecorator {
-  - damage: Integer
+abstract Door {
+    # Open: Boolean
+    + Toggle()
+    + Enter(Player player): Boolean
+    + CanEnter(Player player)
 }
 
-class DisappearingDecorator
+class ToggleDoor {}
+class ColoredDoor {}
+class ClosingGateDoor {}
 
-class PressureDecorator {
-  - pressed: Boolean
+class GameReader {
+    - CreatePlayer(JObject json): Player
+    - CreateRooms(JObject json, Player player): List<Room>
+    - CreateEntities(Room room, JToken items)
+    - GenerateConnections(Game game, JToken json)
+    - GetConsoleColorByString(string color): ConsoleColor
+    + Read(string filePath): Game
 }
 
+class Program {
+    - UnSubscriber: IDisposable
+    - Controller: Controller
+    - View: View
+    - IsRunning: Boolean
+    + Game Game
+    + Exit()
+    + OpenController(): Controller
+    + Input()
+    + OnCompleted()
+    + OnError(Exception error)
+    + OnNext(Game value)
+}
 
-/' 4. Factories '/
-class KeyFactory
-class TrapFactory
-class StoneFactory
-class DoorFactory
+Game --|> Provider
+Player --|> IRenderable
+Connection --|> IRenderable
+Entity --|> IRenderable
+Door --|> IRenderable
 
-/' 5. Relations '/
-Key "1" --> Color
-Door "1" --> Direction
-Game "1" --> "1" Player
-Game "1" --> "1...*" Room
-Room "1" --> "1...*" Door
+Wall --|> Entity
+SankaraStone --|> Entity
+PressurePlate --|> Entity
+Key --|> Entity
+Boobietrap --|> Entity
+DisappearingBoobietrap --|> Boobietrap
 
-Room "1" --o "*" IEntity
-Player "0...1" --o "*" IEntity
-Door "1" --* "1" IDoorStrategy
+ToggleDoor --|> Door
+ColoredDoor --|> Door
+ClosingGateDoor --|> Door
 
-Key --|> IEntity
-Trap --|> IEntity
-IEntity --|> Position
-SankaraStone --|> IEntity
+Tile --- Player
+Tile --- Entity
+Tile --- Room
+Tile --- Position
 
-TrapDecorator --|> Trap
-DamageDecorator --|> TrapDecorator
-PressureDecorator --|> TrapDecorator
-DisappearingDecorator --|> TrapDecorator
+Game --- Player
+Game --- Room
+Game --- Connection
+Game --- Entity
+Game --- Position
 
-ColoredDoorStrategy --|> IDoorStrategy
-ToggleDoorStrategy --|> IDoorStrategy
-ClosingDoorStrategy --|> IDoorStrategy
+Player --- Position
 
-KeyFactory --|> IEntityFactory
-TrapFactory --|> IEntityFactory
-StoneFactory --|> IEntityFactory
+Provider --- UnSubscriber
+
+Program --- UnSubscriber
+Program --- Game
+
+Side --- Room
+Side --- Connection
+
+GameReader --- Game
+GameReader --- Player
+GameReader --- Room
+GameReader --- Connection
+GameReader --- Entity
+GameReader --- Factory
 @enduml
