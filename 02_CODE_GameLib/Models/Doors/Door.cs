@@ -1,8 +1,10 @@
+using System;
+
 namespace CODE_GameLib.Models.Doors
 {
     public abstract class Door : IRenderable
     {
-        public virtual string Color { get; set; }
+        public virtual ConsoleColor Color { get; set; }
         protected bool Open { get; set; } = true;
 
         public virtual bool Enter(Player player)

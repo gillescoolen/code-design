@@ -16,7 +16,7 @@ namespace CODE_Frontend.Views
             this.inputs = inputs;
         }
 
-        public abstract void Draw(StringBuilder builder);
+        public abstract void Draw();
     }
 
     public abstract class View<T> : View where T : Controller<T>

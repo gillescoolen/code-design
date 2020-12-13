@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CODE_GameLib.Models.Entities;
@@ -10,7 +11,7 @@ namespace CODE_GameLib.Models
         public readonly Position StartPosition;
         public int StartRoomId { get; set; }
         public int Lives { get; set; }
-        public string Color { get; set; } = "blue";
+        public ConsoleColor Color { get; set; } = ConsoleColor.Blue;
 
         public Player(int startRoomId, Position position, int lives)
         {

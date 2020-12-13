@@ -1,17 +1,13 @@
+using System;
+
 namespace CODE_GameLib.Models.Entities
 {
     public class Wall : Entity
     {
-        public override string Color { get; set; } = "yellow";
+        public override ConsoleColor Color { get; set; } = ConsoleColor.DarkYellow;
 
-        public override Entity Interact(Player player, Room room)
-        {
-            return this;
-        }
+        public override Entity Interact(Player player, Room room) => this;
 
-        public override bool IsInteractable()
-        {
-            return false;
-        }
+        public override bool IsInteractable() => false;
     }
 }

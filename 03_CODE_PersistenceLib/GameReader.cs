@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CODE_GameLib;
@@ -86,7 +87,7 @@ namespace CODE_FileSystem
 
                 item.Damage = (jsonItem["damage"] ?? 0).Value<int>();
                 tile.Value.Entity = item;
-                tile.Value.Entity.Color = color.Length == 0 ? "white" : color;
+                if (color.Length > 1) tile.Value.Entity.Color = GetConsoleColorByString(color);
             }
         }
 
@@ -108,7 +109,7 @@ namespace CODE_FileSystem
                         var color = (value["color"] ?? "").Value<string>();
                         newConnection.Door = factory.Create($"{value["type"]} door");
                         if (newConnection.Door == null) continue;
-                        newConnection.Door.Color = color.Length == 0 ? "white" : color;
+                        if (color.Length > 1) newConnection.Door.Color = GetConsoleColorByString(color);
                         continue;
                     }
 
@@ -121,6 +122,10 @@ namespace CODE_FileSystem
                     room.AddConnection(connection.Key.GetOpposite(), newConnection);
                 }
             }
+        }
+
+        private ConsoleColor GetConsoleColorByString(string color) {
+            return (ConsoleColor) Enum.Parse(typeof(ConsoleColor), char.ToUpper(color[0]) + color.Substring(1));
         }
     }
 }

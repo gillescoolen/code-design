@@ -10,10 +10,9 @@ namespace CODE_Frontend.Views
         public MainView(MainController controller) : base(controller, new Input((int)ConsoleKey.Enter, controller.Start))
         {
         }
-
-        public override void Draw(StringBuilder builder)
+        public override void Draw()
         {
-            builder.Append("Press enter to play!");
+            Console.WriteLine("Press enter to play!");
         }
     }
 }

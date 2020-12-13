@@ -1,8 +1,10 @@
+using System;
+
 namespace CODE_GameLib.Models.Entities
 {
     public class DisappearingBoobietrap : Boobietrap
     {
-        public override string Color { get; set; } = "white";
+        public override ConsoleColor Color { get; set; } = ConsoleColor.White;
 
         public override Entity Interact(Player player, Room room)
         {

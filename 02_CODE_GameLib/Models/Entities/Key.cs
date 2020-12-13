@@ -1,7 +1,9 @@
+using System;
+
 namespace CODE_GameLib.Models.Entities
 {
     public class Key : Entity
     {
-        public override string Color { get; set; } = "white";
+        public override ConsoleColor Color { get; set; } = ConsoleColor.White;
     }
 }

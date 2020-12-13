@@ -34,6 +34,7 @@ namespace CODE_Frontend
         {
             OnCompleted();
             running = false;
+            Console.Clear();
             Environment.Exit(1);
         }
 
@@ -83,12 +84,11 @@ namespace CODE_Frontend
             Console.Clear();
 
             controller.Update();
-            var builder = new StringBuilder();
-            view.Draw(builder);
+           
+            view.Draw();
 
             Console.CursorVisible = false;
             Console.SetCursorPosition(0, 0);
-            Console.Write(builder.ToString());
         }
     }
 }

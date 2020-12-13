@@ -11,12 +11,10 @@ namespace CODE_Frontend.Views
         {
         }
 
-        public override void Draw(StringBuilder builder)
+        public override void Draw()
         {
-            builder.AppendLine(Controller.GameHasBeenWon() ? "Every Sankara Stone has been found. Congratulations!" : "Oh no, you died!");
-
-            builder.AppendLine();
-            builder.AppendLine("Press the escape key to quit this game...");
+            Console.WriteLine(Controller.GameHasBeenWon() ? "Every Sankara Stone has been found. Congratulations!" : "Oh no, you died!");
+            Console.WriteLine("\nPress the escape key to quit this game...");
         }
     }
 }

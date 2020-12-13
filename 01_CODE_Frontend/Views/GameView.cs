@@ -38,27 +38,29 @@ namespace CODE_Frontend.Views
         {
         }
 
-        public override void Draw(StringBuilder builder)
+        public override void Draw()
         {
-            builder.Append("Welcome to the Temple of Doom!");
-            builder.AppendLine();
-            builder.AppendLine();
-
+            Console.WriteLine("Welcome to the Temple of Doom! \n\n");
             foreach (var (position, tile) in Controller.GetTiles())
             {
                 var symbol = GetSymbol(tile);
 
-                builder.Append(
-                    $"{symbol.ToString().Pastel($"{Color.FromName(tile.GetVisual()?.Color ?? "white").ToArgb():x6}")} ");
+                Console.ForegroundColor = tile.GetVisual()?.Color ?? ConsoleColor.White;
+                Console.Write(symbol);
+                Console.ResetColor();
 
                 if (position.X == Controller.GetCurrentRoom().Width - 1)
                 {
-                    builder.AppendLine();
+                    Console.Write("\n");
                 }
             }
-
-            builder.AppendLine();
-            builder.Append($"Lives: {Controller.GetLives()}");
+            Console.Write("\nLives: ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            for (int i = 0; i < Controller.GetLives(); i++)
+            {
+                Console.Write("<3 ");
+            }
+            Console.ResetColor();
         }
         private char GetSymbol(Tile tile)
         {

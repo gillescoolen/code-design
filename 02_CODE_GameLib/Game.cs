@@ -9,7 +9,6 @@ namespace CODE_GameLib
 {
     public class Game : Provider<Game>
     {
-        public event EventHandler<Game> Updated;
         private Player Player { get; set; }
         private List<Room> Rooms { get; set; } = new List<Room>();
 
