@@ -20,7 +20,7 @@ namespace CODE_GameLib.Models
             Lives = lives;
         }
 
-        public IEnumerable<Entity> GetEntities<T>()
+        public IEnumerable<Entity> GetInventory<T>()
         {
             return Inventory.Where(i => i is T)
                 .ToList();

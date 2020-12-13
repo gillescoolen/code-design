@@ -11,12 +11,8 @@ namespace CODE_GameLib.Models
 
         public IRenderable GetVisual()
         {
-            if (Player != null)
-                return Player;
-
-            if (Entity != null)
-                return Entity;
-
+            if (Player != null) return Player;
+            if (Entity != null) return Entity;
             return Connection;
         }
     }

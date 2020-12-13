@@ -6,8 +6,14 @@ namespace CODE_GameLib.Models.Entities
     {
         public override ConsoleColor Color { get; set; } = ConsoleColor.DarkYellow;
 
-        public override Entity Interact(Player player, Room room) => this;
+        public override Entity Interact(Player player, Room room)
+        {
+            return this;
+        }
 
-        public override bool IsInteractable() => false;
+        public override bool IsInteractable()
+        {
+            return false;
+        }
     }
 }

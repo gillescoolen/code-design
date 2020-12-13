@@ -5,18 +5,18 @@ namespace CODE_GameLib.Utilities
 {
     public class UnSubscriber<T> : IDisposable
     {
-        private readonly List<IObserver<T>> observers;
-        private readonly IObserver<T> observer;
+        private readonly List<IObserver<T>> Observers;
+        private readonly IObserver<T> Observer;
 
         public UnSubscriber(List<IObserver<T>> observers, IObserver<T> observer)
         {
-            this.observers = observers;
-            this.observer = observer;
+            this.Observers = observers;
+            this.Observer = observer;
         }
 
         public void Dispose()
         {
-            observers.Remove(observer);
+            Observers.Remove(Observer);
         }
     }
 }

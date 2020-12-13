@@ -10,7 +10,7 @@ namespace CODE_GameLib.Models.Doors
 
         public override bool Enter(Player player)
         {
-            var keys = player.GetEntities<Key>();
+            var keys = player.GetInventory<Key>();
             return keys.FirstOrDefault(k => k.Color == Color) != null;
         }
     }

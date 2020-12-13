@@ -124,8 +124,9 @@ namespace CODE_FileSystem
             }
         }
 
-        private ConsoleColor GetConsoleColorByString(string color) {
-            return (ConsoleColor) Enum.Parse(typeof(ConsoleColor), char.ToUpper(color[0]) + color.Substring(1));
+        private ConsoleColor GetConsoleColorByString(string color)
+        {
+            return (ConsoleColor)Enum.Parse(typeof(ConsoleColor), char.ToUpper(color[0]) + color.Substring(1));
         }
     }
 }

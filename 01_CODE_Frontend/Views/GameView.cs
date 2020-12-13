@@ -1,20 +1,17 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using CODE_Frontend.Controllers;
 using CODE_Frontend.Models;
 using CODE_GameLib.Models;
 using CODE_GameLib.Models.Doors;
 using CODE_GameLib.Models.Entities;
-using Pastel;
 
 namespace CODE_Frontend.Views
 {
     public class GameView : View<GameController>
     {
-        private readonly Dictionary<Entity, char> itemSymbols = new Dictionary<Entity, char>
+        private readonly Dictionary<Entity, char> entityCharacters = new Dictionary<Entity, char>
         {
             { new Wall(), '#' },
             { new SankaraStone(), 'S' },
@@ -24,7 +21,7 @@ namespace CODE_Frontend.Views
             { new DisappearingBoobietrap(), '@' }
         };
 
-        private readonly Dictionary<Door, char> doorSymbols = new Dictionary<Door, char>
+        private readonly Dictionary<Door, char> doorCharacters = new Dictionary<Door, char>
         {
             { new ClosingGateDoor(), 'u' },
             { new ToggleDoor(), '┴' }
@@ -43,10 +40,10 @@ namespace CODE_Frontend.Views
             Console.WriteLine("Welcome to the Temple of Doom! \n\n");
             foreach (var (position, tile) in Controller.GetTiles())
             {
-                var symbol = GetSymbol(tile);
+                var character = GetCharacter(tile);
 
                 Console.ForegroundColor = tile.GetVisual()?.Color ?? ConsoleColor.White;
-                Console.Write(symbol);
+                Console.Write(character);
                 Console.ResetColor();
 
                 if (position.X == Controller.GetCurrentRoom().Width - 1)
@@ -62,15 +59,15 @@ namespace CODE_Frontend.Views
             }
             Console.ResetColor();
         }
-        private char GetSymbol(Tile tile)
+        private char GetCharacter(Tile tile)
         {
             if (tile.Entity != null)
             {
-                return itemSymbols.FirstOrDefault(symbol => symbol.Key.GetType() == tile.Entity.GetType()).Value;
+                return entityCharacters.FirstOrDefault(character => character.Key.GetType() == tile.Entity.GetType()).Value;
             }
 
             if (tile.Connection?.Door == null) return tile.Player != null ? 'X' : ' ';
-            var (key, value) = doorSymbols.FirstOrDefault(symbol => symbol.Key.GetType() == tile.Connection.Door.GetType());
+            var (key, value) = doorCharacters.FirstOrDefault(character => character.Key.GetType() == tile.Connection.Door.GetType());
 
             if (key != null)
             {

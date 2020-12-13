@@ -7,13 +7,13 @@ namespace CODE_Frontend.Views
 {
     public abstract class View
     {
-        private readonly Input[] inputs;
+        private readonly Input[] _Inputs;
 
-        public IEnumerable<Input> Inputs => (Input[]) inputs.Clone();
+        public IEnumerable<Input> Inputs => (Input[])_Inputs.Clone();
 
         internal View(Input[] inputs)
         {
-            this.inputs = inputs;
+            this._Inputs = inputs;
         }
 
         public abstract void Draw();

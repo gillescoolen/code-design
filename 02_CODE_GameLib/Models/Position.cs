@@ -9,8 +9,7 @@ namespace CODE_GameLib.Models.Entities
 
         public override bool Equals(object obj)
         {
-            if (obj == null || GetType() != obj.GetType())
-                return false;
+            if (obj == null || GetType() != obj.GetType()) return false;
 
             var p = (Position)obj;
 

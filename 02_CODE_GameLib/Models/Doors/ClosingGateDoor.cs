@@ -14,6 +14,7 @@ namespace CODE_GameLib.Models.Doors
             }
 
             Toggle();
+
             return true;
         }
 

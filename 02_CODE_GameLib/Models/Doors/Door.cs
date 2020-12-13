@@ -7,14 +7,14 @@ namespace CODE_GameLib.Models.Doors
         public virtual ConsoleColor Color { get; set; }
         protected bool Open { get; set; } = true;
 
-        public virtual bool Enter(Player player)
-        {
-            return true;
-        }
-
         public virtual void Toggle()
         {
             Open = !Open;
+        }
+
+        public virtual bool Enter(Player player)
+        {
+            return true;
         }
 
         public virtual bool CanEnter(Player player)

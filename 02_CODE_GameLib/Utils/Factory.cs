@@ -6,25 +6,25 @@ namespace CODE_GameLib.Utilities
 {
     public class Factory<T> where T : class
     {
-        private readonly string nameSpace;
+        private readonly string Namespace;
 
         public Factory(string nameSpace = "Models")
         {
-            this.nameSpace = nameSpace;
+            this.Namespace = nameSpace;
         }
 
         public T Create(string name)
         {
             var currentType = typeof(Factory<T>);
             var currentTypeNamespace = currentType.Namespace;
-            var type = Type.GetType($"{currentTypeNamespace?.Split(".")[0]}.{nameSpace}.{ConvertString(name)}");
+            var type = Type.GetType($"{currentTypeNamespace?.Split(".")[0]}.{Namespace}.{ConvertString(name)}");
             return type == null ? null : (T)Activator.CreateInstance(type)!;
         }
 
         private static string ConvertString(string name)
         {
-            var textInfo = new CultureInfo("en-US", false);
-            return Regex.Replace(textInfo.TextInfo.ToTitleCase(name), @"\s+", "");
+            var info = new CultureInfo("en-US", false);
+            return Regex.Replace(info.TextInfo.ToTitleCase(name), @"\s+", "");
         }
     }
 }

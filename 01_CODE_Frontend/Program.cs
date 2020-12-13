@@ -11,10 +11,10 @@ namespace CODE_Frontend
     {
         public Game Game;
 
-        private IDisposable unSubscriber;
-        private Controller controller;
-        private View view;
-        private bool running = true;
+        private IDisposable UnSubscriber;
+        private Controller Controller;
+        private View View;
+        private bool IsRunning = true;
 
         private Program()
         {
@@ -25,7 +25,7 @@ namespace CODE_Frontend
             Game = gameReader.Read("./Levels/TempleOfDoom.json");
 
             OpenController<MainController>();
-            unSubscriber = Game.Subscribe(this);
+            UnSubscriber = Game.Subscribe(this);
 
             Input();
         }
@@ -33,7 +33,7 @@ namespace CODE_Frontend
         public void Exit()
         {
             OnCompleted();
-            running = false;
+            IsRunning = false;
             Console.Clear();
             Environment.Exit(1);
         }
@@ -45,20 +45,20 @@ namespace CODE_Frontend
 
         public void OpenController<T>() where T : Controller<T>
         {
-            var newController = (T)Activator.CreateInstance(typeof(T), this);
+            var controller = (T)Activator.CreateInstance(typeof(T), this);
 
-            controller = newController;
-            view = newController?.CreateView();
+            Controller = controller;
+            View = controller?.CreateView();
             OnNext(Game);
         }
 
         private void Input()
         {
-            while (running)
+            while (IsRunning)
             {
                 var key = Console.ReadKey(true);
 
-                foreach (var input in view.Inputs)
+                foreach (var input in View.Inputs)
                 {
                     if (input.Character != (int)key.Key) continue;
 
@@ -69,12 +69,13 @@ namespace CODE_Frontend
 
         public void OnCompleted()
         {
-            unSubscriber.Dispose();
+            UnSubscriber.Dispose();
         }
 
-        public void OnError(Exception error)
+        public void OnError(Exception exception)
         {
-            Console.Write($"Exception!: {error.Message}");
+            Console.WriteLine($"Uh oh, something went wrong!");
+            Console.WriteLine(exception.Message);
         }
 
         public void OnNext(Game value)
@@ -83,9 +84,9 @@ namespace CODE_Frontend
 
             Console.Clear();
 
-            controller.Update();
-           
-            view.Draw();
+            Controller.Update();
+
+            View.Draw();
 
             Console.CursorVisible = false;
             Console.SetCursorPosition(0, 0);
