@@ -29,7 +29,7 @@ class EndController {
 
 class GameController {
     + GameHasBeenWon(): Boolean
-    + MovePlayer(Side direction)
+    + MovePlayer(Direction direction)
     + GetTiles(): Dictionary<Position, Tile>
     + GetCurrentRoom(): Room
     + GetLives(): Integer
