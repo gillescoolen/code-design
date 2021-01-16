@@ -1,5 +1,5 @@
 using System;
-using CODE_GameLib.Models.Doors;
+using CODE_GameLib.Models.Connectors;
 
 namespace CODE_GameLib.Models.Entities
 {

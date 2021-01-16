@@ -36,12 +36,6 @@ namespace CODE_GameLib
 
             if (!roomDirection.HasValue) return false;
 
-            var (direction, room) = roomDirection.Value;
-
-            GetCurrentRoom().RemovePlayer();
-
-            room.SpawnPlayer(room.GetSpawnPosition(direction.GetOpposite()), Player);
-
             Notify(this);
 
             return true;

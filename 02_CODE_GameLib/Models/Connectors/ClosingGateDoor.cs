@@ -1,6 +1,6 @@
 using System;
 
-namespace CODE_GameLib.Models.Doors
+namespace CODE_GameLib.Models.Connectors
 {
     public class ClosingGateDoor : Door
     {

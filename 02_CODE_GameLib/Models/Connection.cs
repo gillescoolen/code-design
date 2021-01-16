@@ -1,7 +1,8 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CODE_GameLib.Models.Doors;
+using CODE_GameLib.Models.Connectors;
 
 namespace CODE_GameLib.Models
 {
@@ -11,14 +12,26 @@ namespace CODE_GameLib.Models
         {
             get => Door?.Color ?? ConsoleColor.White;
         }
-
-        public Door Door { get; set; }
-        public Dictionary<Side, Room> Connections { get; } = new Dictionary<Side, Room>();
-        public KeyValuePair<Side, Room>? Enter(Room currentRoom, Player player)
+        public Ladder? Ladder { get; set; }
+        public Door? Door { get; set; }
+        public Dictionary<Direction, Room> Connections { get; } = new Dictionary<Direction, Room>();
+        public KeyValuePair<Direction, Room>? Enter(Room currentRoom, Player player)
         {
             if (Door != null && !Door.Enter(player)) return null;
 
-            return Connections.FirstOrDefault(c => c.Value != currentRoom);
+            KeyValuePair<Direction, Room> connection = Connections.FirstOrDefault(c => c.Value != currentRoom);
+            if (connection.Value == null) return null;
+
+            currentRoom.RemovePlayer();
+            connection.Value.SpawnPlayer(Ladder != null ? Ladder.GetCorrectPosition(connection.Key) : connection.Value.GetSpawnPosition(connection.Key.GetOpposite()), player);
+
+            return connection;
         }
+
+        public IRenderable? GetVisual()
+        {
+            if (Door != null) return Door;
+            return Ladder;
+       }
     }
 }

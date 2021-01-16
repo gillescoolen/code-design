@@ -1,6 +1,6 @@
 using System;
 
-namespace CODE_GameLib.Models.Doors
+namespace CODE_GameLib.Models.Connectors
 {
     public abstract class Door : IRenderable
     {

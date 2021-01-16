@@ -12,7 +12,7 @@ namespace CODE_GameLib.Models
         LOWER
     }
 
-    public static class SideExtension
+    public static class DirectionExtension
     {
         public static Position GetStep(this Direction direction)
         {
@@ -43,6 +43,10 @@ namespace CODE_GameLib.Models
                     return Direction.NORTH;
                 case Direction.WEST:
                     return Direction.EAST;
+                case Direction.UPPER:
+                    return Direction.LOWER;
+                case Direction.LOWER:
+                    return Direction.UPPER;
                 default:
                     return Direction.SOUTH;
             }

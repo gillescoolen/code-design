@@ -27,7 +27,7 @@ namespace CODE_GameLib.Models
                 for (var x = 0; x <= Width - 1; ++x)
                 {
                     var position = new Position { X = x, Y = y };
-                    var tile = new Tile { Entity = IsWall(x, y) ? new Wall() : null, Position = position };
+                    var tile = new Tile(position) { Entity = IsWall(x, y) ? new Wall() : null, Position = position };
                     Tiles.Add(position, tile);
                 }
             }
@@ -50,18 +50,18 @@ namespace CODE_GameLib.Models
                    .ToList();
         }
 
-        public Position GetSpawnPosition(Side direction)
+        public Position GetSpawnPosition(Direction direction)
         {
             var position = new Position();
 
-            if (direction == Side.NORTH || direction == Side.SOUTH)
+            if (direction == Direction.NORTH || direction == Direction.SOUTH)
             {
                 position.X = (int)Math.Floor(Width / 2.0);
-                position.Y = direction == Side.NORTH ? 0 : Height - 1;
+                position.Y = direction == Direction.NORTH ? 0 : Height - 1;
             }
             else
             {
-                position.X = direction == Side.WEST ? 0 : Width - 1;
+                position.X = direction == Direction.WEST ? 0 : Width - 1;
                 position.Y = (int)Math.Floor(Height / 2.0);
             }
 
@@ -73,9 +73,13 @@ namespace CODE_GameLib.Models
             return Tiles.First(tile => tile.Value.Entity == entity).Value;
         }
 
-        public void AddConnection(Side direction, Connection connection)
+        public void AddConnection(Direction direction, Connection connection)
         {
-            var position = GetSpawnPosition(direction);
+            Position position;
+
+            if (connection.Ladder == null) position = GetSpawnPosition(direction);
+            else position = connection.Ladder.GetCorrectPosition(connection.Connections.First(c => c.Value == this).Key);
+
             var tile = GetTileByPosition(position.X, position.Y);
 
             tile.Entity = null;

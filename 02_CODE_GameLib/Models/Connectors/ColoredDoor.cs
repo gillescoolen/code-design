@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using CODE_GameLib.Models.Entities;
 
-namespace CODE_GameLib.Models.Doors
+namespace CODE_GameLib.Models.Connectors
 {
     public class ColoredDoor : Door
     {
