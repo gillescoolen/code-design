@@ -6,14 +6,11 @@ namespace CODE_GameLib.Models.Entities
     {
         public abstract ConsoleColor Color { get; set; }
         public int Damage { get; set; }
-        public virtual Entity Interact(Player player, Room room)
+        public virtual Entity Interact(IActor actor, Room room, Game game)
         {
-            if (room == null) return null;
-
-            player.AddToInventory(this);
-            var tile = room.GetTileByItem(this);
-            tile.Entity = null;
-
+            actor.AddToInventory(this);
+            var square = room.GetTileByEntity(this);
+            square.Entity = null;
             return this;
         }
 

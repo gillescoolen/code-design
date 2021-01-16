@@ -15,4 +15,12 @@
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
     </ItemGroup>
+
+    <ItemGroup>
+        <Reference Include="CODE_TempleOfDoom_DownloadableContent">
+            <HintPath>..\CODE_TempleOfDoom_DownloadableContent.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+  
+
 </Project>

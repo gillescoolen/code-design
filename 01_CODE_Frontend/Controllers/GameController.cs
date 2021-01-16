@@ -25,10 +25,10 @@ namespace CODE_Frontend.Controllers
             }
         }
 
-        public void MovePlayer(Direction direction)
+        public void Move(Direction direction)
         {
             var game = Program.Game;
-            game.MovePlayer(direction.GetStep());
+            game.Move(direction.GetStep());
         }
 
         public Dictionary<Position, Tile> GetTiles()
@@ -44,6 +44,10 @@ namespace CODE_Frontend.Controllers
         public int GetLives()
         {
             return Program.Game.GetPlayerLives();
+        }
+        public void HitEnemies()
+        {
+            Program.Game.HitEnemies();
         }
     }
 }

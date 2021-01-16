@@ -6,9 +6,9 @@ namespace CODE_GameLib.Models.Entities
     {
         public override ConsoleColor Color { get; set; } = ConsoleColor.White;
 
-        public override Entity Interact(Player player, Room room)
+        public override Entity Interact(IActor actor, Room room, Game game)
         {
-            player.Hurt(Damage);
+            actor.Hurt(Damage);
             return this;
         }
     }

@@ -8,6 +8,8 @@ using CODE_GameLib.Models.Connectors;
 using CODE_GameLib.Models.Entities;
 using CODE_GameLib.Utilities;
 using Newtonsoft.Json.Linq;
+using CODE_TempleOfDoom_DownloadableContent;
+using CODE_GameLib.Adapters;
 
 namespace CODE_FileSystem
 {
@@ -40,6 +42,35 @@ namespace CODE_FileSystem
             return new Player(startRoomId, startPosition, player["lives"]!.Value<int>());
         }
 
+        private static void PlaceEnemies(Room room, JToken enemies)
+        {
+            foreach (var enemy in enemies)
+            {
+                var parameters = new
+                {
+                    Type = enemy["type"]!.Value<string>(),
+                    StartX = enemy["x"]!.Value<int>(),
+                    StartY = enemy["y"]!.Value<int>(),
+                    MinX = enemy["minX"]!.Value<int>(),
+                    MaxX = enemy["maxX"]!.Value<int>(),
+                    MinY = enemy["minY"]!.Value<int>(),
+                    MaxY = enemy["maxY"]!.Value<int>()
+                };
+
+                dynamic actor;
+
+                var tile = room.Tiles.FirstOrDefault(s => s.Key.X == parameters.StartX && s.Key.Y == parameters.StartY);
+
+                if (parameters.Type == "horizontal")
+                    actor = new HorizontallyMovingEnemy(1, parameters.StartX, parameters.StartY, parameters.MinX, parameters.MaxX);
+                else
+                    actor = new VerticallyMovingEnemy(1, parameters.StartX, parameters.StartY, parameters.MinY, parameters.MaxY);
+
+                tile.Value.Actor = new EnemyAdapter(actor);
+            }
+        }
+
+
         private List<Room> CreateRooms(JObject json, Player player)
         {
             var rooms = new List<Room>();
@@ -52,15 +83,11 @@ namespace CODE_FileSystem
 
                 var newRoom = new Room(width, height, id);
 
-                if (id == player.StartRoomId)
-                {
-                    newRoom.SpawnPlayer(player.StartPosition, player);
-                }
+                if (id == player.StartRoomId) newRoom.SpawnPlayer(player.StartPosition, player);
 
-                if (room["items"] != null)
-                {
-                    CreateEntities(newRoom, room["items"]!);
-                }
+                if (room["items"] != null) CreateEntities(newRoom, room["items"]!);
+
+                if (room["enemies"] != null) PlaceEnemies(newRoom, room["enemies"]!);
 
                 rooms.Add(newRoom);
             }

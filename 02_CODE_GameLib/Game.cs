@@ -30,7 +30,7 @@ namespace CODE_GameLib
 
         public bool UseConnection(Tile tile)
         {
-            if (Player != tile.Player || tile.Connection == null) return false;
+            if (Player != tile.Actor || tile.Connection == null) return false;
 
             var roomDirection = tile.Connection.Enter(GetCurrentRoom(), Player);
 
@@ -58,18 +58,52 @@ namespace CODE_GameLib
 
         public Entity UseEntity(Tile tile)
         {
-            if (Player != tile.Player || tile.Entity == null) return null;
-            var entity = tile.Entity.Interact(Player, GetCurrentRoom());
+            if (Player != tile.Actor || tile.Entity == null) return null;
+            var entity = tile.Entity.Interact(Player, GetCurrentRoom(), this);
 
             Notify(this);
 
             return entity;
         }
 
-        public void MovePlayer(Position newPosition)
+        public void Move(Position movePosition, bool enemyMovement = false, bool isTurn = true)
         {
-            var tile = Player.Move(GetCurrentRoom(), newPosition);
-            if (tile == null || !UseConnection(tile) && UseEntity(tile) == null) Notify(this);
+            var currentRoom = GetCurrentRoom();
+
+            Tile? tile = null;
+
+            if (!enemyMovement || isTurn)
+                tile = Player.Move(currentRoom, movePosition);
+
+            if (enemyMovement || isTurn)
+                currentRoom.MoveEnemies(this);
+
+            if (tile == null || !UseConnection(tile) && UseEntity(tile) == null)
+                Notify(this);
         }
+        
+        public void HitEnemies()
+        {
+            var currentRoom = GetCurrentRoom();
+            var playerPosition = currentRoom.GetPlayerPosition()!;
+
+            var possiblePositions = new List<Position>
+            {
+                new Position { X = playerPosition.X + 1, Y = playerPosition.Y },
+                new Position { X = playerPosition.X - 1, Y = playerPosition.Y },
+                new Position { X = playerPosition.X, Y = playerPosition.Y - 1 },
+                new Position { X = playerPosition.X, Y = playerPosition.Y + 1 }
+            };
+
+            foreach (var enemy in currentRoom.GetEnemies())
+            {
+                if (!possiblePositions.Contains(enemy.CurrentPosition)) continue;
+                var newHealth = enemy.Hurt(1);
+                if (newHealth <= 0) GetCurrentRoom().RemoveEnemy(enemy.CurrentPosition);
+            }
+
+            Notify(this);
+        }
+
     }
 }

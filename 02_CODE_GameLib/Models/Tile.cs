@@ -4,7 +4,7 @@ namespace CODE_GameLib.Models
 {
     public class Tile
     {
-        public Player Player { get; set; }
+        public IActor? Actor { get; set; }
         public Entity Entity { get; set; }
         public Connection Connection { get; set; }
         public Position Position { get; set; }
@@ -16,7 +16,7 @@ namespace CODE_GameLib.Models
         
         public IRenderable GetVisual()
         {
-            if (Player != null) return Player;
+            if (Actor != null) return Actor;
 
             return Entity ?? Connection?.GetVisual();
         }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CODE_GameLib.Adapters;
 using CODE_GameLib.Models.Entities;
 
 namespace CODE_GameLib.Models
@@ -50,6 +51,35 @@ namespace CODE_GameLib.Models
                    .ToList();
         }
 
+        public IEnumerable<EnemyAdapter> GetEnemies()
+        {
+            return Tiles.Values
+                .Where(t => t.Actor is EnemyAdapter)
+                .Select(t => t.Actor as EnemyAdapter)
+                .ToList();
+        }
+
+        //Beweeg alle enemies in de kamer.
+        public void MoveEnemies(Game game)
+        {
+            foreach (var enemy in GetEnemies())
+            {
+                var tile = enemy.Move(this, new Position());
+                tile?.Entity?.Interact(enemy, this, game);
+            }
+        }
+
+        public void RemoveEnemy(Position position)
+        {
+            var tile = GetTileByPosition(position.X, position.Y);
+            tile.Actor = null;
+        }
+
+        public void PlaceActor(Position position, IActor actor)
+        {
+            Tiles[position].Actor = actor;
+        }
+
         public Position GetSpawnPosition(Direction direction)
         {
             var position = new Position();
@@ -68,7 +98,7 @@ namespace CODE_GameLib.Models
             return position;
         }
 
-        public Tile GetTileByItem(Entity entity)
+        public Tile GetTileByEntity(Entity entity)
         {
             return Tiles.First(tile => tile.Value.Entity == entity).Value;
         }
@@ -95,7 +125,7 @@ namespace CODE_GameLib.Models
 
         public void SpawnPlayer(Position position, Player player)
         {
-            Tiles[position].Player = player;
+            Tiles[position].Actor = player;
         }
 
         public void RemovePlayer()
@@ -104,12 +134,12 @@ namespace CODE_GameLib.Models
             if (position == null) return;
 
             var tile = GetTileByPosition(position.X, position.Y);
-            tile.Player = null;
+            tile.Actor = null;
         }
 
         public Position GetPlayerPosition()
         {
-            return Tiles.FirstOrDefault(e => e.Value.Player != null).Key;
+            return Tiles.FirstOrDefault(e => e.Value.Actor != null).Key;
         }
     }
 }

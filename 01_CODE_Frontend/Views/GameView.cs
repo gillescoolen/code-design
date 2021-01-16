@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CODE_Frontend.Controllers;
 using CODE_Frontend.Models;
+using CODE_GameLib.Adapters;
 using CODE_GameLib.Models;
 using CODE_GameLib.Models.Connectors;
 using CODE_GameLib.Models.Entities;
@@ -23,14 +24,14 @@ namespace CODE_Frontend.Views
             { typeof(Player), 'X' },
             { typeof(ClosingGateDoor), 'u' },
             { typeof(ToggleDoor), '┴' },
-
+            { typeof(EnemyAdapter), 'E' }
         };
 
         public GameView(GameController controller) : base(controller,
-            new Input((int)ConsoleKey.LeftArrow, () => controller.MovePlayer(Direction.WEST)),
-            new Input((int)ConsoleKey.UpArrow, () => controller.MovePlayer(Direction.NORTH)),
-            new Input((int)ConsoleKey.RightArrow, () => controller.MovePlayer(Direction.EAST)),
-            new Input((int)ConsoleKey.DownArrow, () => controller.MovePlayer(Direction.SOUTH)))
+            new Input((int)ConsoleKey.LeftArrow, () => controller.Move(Direction.WEST)),
+            new Input((int)ConsoleKey.UpArrow, () => controller.Move(Direction.NORTH)),
+            new Input((int)ConsoleKey.RightArrow, () => controller.Move(Direction.EAST)),
+            new Input((int)ConsoleKey.DownArrow, () => controller.Move(Direction.SOUTH)))
         {
         }
 

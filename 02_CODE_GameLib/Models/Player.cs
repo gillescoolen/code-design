@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CODE_GameLib.Adapters;
 using CODE_GameLib.Models.Entities;
 
 namespace CODE_GameLib.Models
 {
-    public class Player : IRenderable
+    public class Player : IActor
     {
-        private List<Entity> Inventory = new List<Entity>();
+        public List<Entity> Inventory { get; } = new List<Entity>();
         public readonly Position StartPosition;
         public int StartRoomId { get; set; }
         public int Lives { get; set; }
@@ -20,10 +21,9 @@ namespace CODE_GameLib.Models
             Lives = lives;
         }
 
-        public IEnumerable<Entity> GetInventory<T>()
+        public List<Entity> GetInventory<T>()
         {
-            return Inventory.Where(i => i is T)
-                .ToList();
+            return Inventory.Where(i => i is T).ToList();
         }
 
         public Tile Move(Room room, Position movePosition)
@@ -49,6 +49,12 @@ namespace CODE_GameLib.Models
             // If the position we move to has an entity which is not interactable.
             if (newSquare.Entity != null && !newSquare.Entity.IsInteractable() || connection?.Door != null && !connection.Door.CanEnter(this)) return null;
 
+            if (newSquare.Actor is EnemyAdapter)
+            {
+                Hurt(1);
+                return null;
+            }
+
             room.RemovePlayer();
             room.SpawnPlayer(position, this);
 
@@ -60,9 +66,9 @@ namespace CODE_GameLib.Models
             return Lives -= damage;
         }
 
-        public void AddToInventory(Entity item)
+        public void AddToInventory(Entity entity)
         {
-            Inventory.Add(item);
+            Inventory.Add(entity);
         }
 
         public int GetAmountOfSankaraStones()
