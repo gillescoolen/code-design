@@ -25,7 +25,7 @@ namespace CODE_Frontend.Controllers
             }
         }
 
-        public void MovePlayer(Side direction)
+        public void MovePlayer(Direction direction)
         {
             var game = Program.Game;
             game.MovePlayer(direction.GetStep());
