@@ -31,7 +31,11 @@ namespace CODE_Frontend.Views
             new Input((int)ConsoleKey.LeftArrow, () => controller.Move(Direction.WEST)),
             new Input((int)ConsoleKey.UpArrow, () => controller.Move(Direction.NORTH)),
             new Input((int)ConsoleKey.RightArrow, () => controller.Move(Direction.EAST)),
-            new Input((int)ConsoleKey.DownArrow, () => controller.Move(Direction.SOUTH)))
+            new Input((int)ConsoleKey.DownArrow, () => controller.Move(Direction.SOUTH)),
+            new Input((int)ConsoleKey.Spacebar, () => controller.HitEnemies()),
+            new Input((int) ConsoleKey.L,() => controller.ToggleDieCheat()),
+            new Input((int)ConsoleKey.D, () => controller.ToggleDoorCheat())
+        )
         {
         }
 

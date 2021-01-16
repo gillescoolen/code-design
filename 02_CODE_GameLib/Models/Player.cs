@@ -13,6 +13,8 @@ namespace CODE_GameLib.Models
         public int StartRoomId { get; set; }
         public int Lives { get; set; }
         public ConsoleColor Color { get; set; } = ConsoleColor.Blue;
+        public bool CanOpenDoors { get; set; }
+        public bool CanDie { get; set; } = true;
 
         public Player(int startRoomId, Position position, int lives)
         {
@@ -43,13 +45,12 @@ namespace CODE_GameLib.Models
                 return currentSquare;
             }
 
-            var newSquare = room.Tiles[position];
-            var connection = newSquare.Connection;
+            var tile = room.Tiles[position];
+            var connection = tile.Connection;
 
-            // If the position we move to has an entity which is not interactable.
-            if (newSquare.Entity != null && !newSquare.Entity.IsInteractable() || connection?.Door != null && !connection.Door.CanEnter(this)) return null;
+            if (tile.Entity != null && !tile.Entity.IsInteractable() || connection?.Door != null && !connection.Door.CanEnter(this)) return null;
 
-            if (newSquare.Actor is EnemyAdapter)
+            if (tile.Actor is EnemyAdapter)
             {
                 Hurt(1);
                 return null;
@@ -58,7 +59,7 @@ namespace CODE_GameLib.Models
             room.RemovePlayer();
             room.SpawnPlayer(position, this);
 
-            return newSquare;
+            return tile;
         }
 
         public int Hurt(int damage)

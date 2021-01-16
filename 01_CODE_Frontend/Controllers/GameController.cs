@@ -49,5 +49,14 @@ namespace CODE_Frontend.Controllers
         {
             Program.Game.HitEnemies();
         }
+        public void ToggleDoorCheat()
+        {
+            Program.Game.ToggleDoorCheat();
+        }
+
+        public void ToggleDieCheat()
+        {
+            Program.Game.ToggleDieCheat();
+        }
     }
 }

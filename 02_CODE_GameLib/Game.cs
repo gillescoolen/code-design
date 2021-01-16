@@ -105,5 +105,14 @@ namespace CODE_GameLib
             Notify(this);
         }
 
+        public void ToggleDoorCheat()
+        {
+            Player.CanOpenDoors = !Player.CanOpenDoors;
+        }
+
+        public void ToggleDieCheat()
+        {
+            Player.CanDie = !Player.CanDie;
+        }
     }
 }

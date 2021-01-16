@@ -8,7 +8,7 @@ namespace CODE_GameLib.Models.Connectors
 
         public override bool Enter(Player player)
         {
-            if (!Open)
+            if (!Open && !player.CanOpenDoors)
             {
                 return false;
             }
