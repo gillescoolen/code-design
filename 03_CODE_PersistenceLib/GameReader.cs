@@ -35,36 +35,36 @@ namespace CODE_FileSystem
             var startRoomId = player["startRoomId"].Value<int>();
             var startPosition = new Position
             {
-                X = player["startX"]!.Value<int>(),
-                Y = player["startY"]!.Value<int>()
+                X = player["startX"].Value<int>(),
+                Y = player["startY"].Value<int>()
             };
 
-            return new Player(startRoomId, startPosition, player["lives"]!.Value<int>());
+            return new Player(startRoomId, startPosition, player["lives"].Value<int>());
         }
 
-        private static void PlaceEnemies(Room room, JToken enemies)
+        private static void CreateEnemies(Room room, JToken enemies)
         {
             foreach (var enemy in enemies)
             {
-                var parameters = new
+                var values = new
                 {
-                    Type = enemy["type"]!.Value<string>(),
-                    StartX = enemy["x"]!.Value<int>(),
-                    StartY = enemy["y"]!.Value<int>(),
-                    MinX = enemy["minX"]!.Value<int>(),
-                    MaxX = enemy["maxX"]!.Value<int>(),
-                    MinY = enemy["minY"]!.Value<int>(),
-                    MaxY = enemy["maxY"]!.Value<int>()
+                    Type = enemy["type"].Value<string>(),
+                    StartX = enemy["x"].Value<int>(),
+                    StartY = enemy["y"].Value<int>(),
+                    MinX = enemy["minX"].Value<int>(),
+                    MaxX = enemy["maxX"].Value<int>(),
+                    MinY = enemy["minY"].Value<int>(),
+                    MaxY = enemy["maxY"].Value<int>()
                 };
 
                 dynamic actor;
 
-                var tile = room.Tiles.FirstOrDefault(s => s.Key.X == parameters.StartX && s.Key.Y == parameters.StartY);
+                var tile = room.Tiles.FirstOrDefault(s => s.Key.X == values.StartX && s.Key.Y == values.StartY);
 
-                if (parameters.Type == "horizontal")
-                    actor = new HorizontallyMovingEnemy(1, parameters.StartX, parameters.StartY, parameters.MinX, parameters.MaxX);
+                if (values.Type == "horizontal")
+                    actor = new HorizontallyMovingEnemy(1, values.StartX, values.StartY, values.MinX, values.MaxX);
                 else
-                    actor = new VerticallyMovingEnemy(1, parameters.StartX, parameters.StartY, parameters.MinY, parameters.MaxY);
+                    actor = new VerticallyMovingEnemy(1, values.StartX, values.StartY, values.MinY, values.MaxY);
 
                 tile.Value.Actor = new EnemyAdapter(actor);
             }
@@ -83,11 +83,11 @@ namespace CODE_FileSystem
 
                 var newRoom = new Room(width, height, id);
 
-                if (id == player.StartRoomId) newRoom.SpawnPlayer(player.StartPosition, player);
+                if (id == player.StartRoomId) newRoom.PlaceActor(player.CurrentPosition, player);
 
-                if (room["items"] != null) CreateEntities(newRoom, room["items"]!);
+                if (room["items"] != null) CreateEntities(newRoom, JToken.FromObject(room["items"].Concat(room["specialFloorTiles"] ?? "")));
 
-                if (room["enemies"] != null) PlaceEnemies(newRoom, room["enemies"]!);
+                if (room["enemies"] != null) CreateEnemies(newRoom, room["enemies"]);
 
                 rooms.Add(newRoom);
             }
@@ -101,7 +101,7 @@ namespace CODE_FileSystem
 
             foreach (var jsonItem in items)
             {
-                var name = jsonItem["type"]!.Value<string>();
+                var name = jsonItem["type"].Value<string>();
                 var color = (jsonItem["color"] ?? "").Value<string>();
                 var entity = factory.Create(name);
 
@@ -119,9 +119,9 @@ namespace CODE_FileSystem
 
         private void GenerateConnections(Game game, JToken json)
         {
-            var factory = new Factory<Door>("Models.Doors");
+            var factory = new Factory<Door>("Models.Connectors");
 
-            foreach (var jsonConnection in json["connections"]!)
+            foreach (var jsonConnection in json["connections"])
             {
                 var newConnection = new Connection();
 
@@ -142,14 +142,14 @@ namespace CODE_FileSystem
                     if (key == "ladder")
                     {
                         var upperPosition = new Position
-                        { X = value["upperX"]!.Value<int>(), Y = value["upperY"]!.Value<int>() };
+                        { X = value["upperX"].Value<int>(), Y = value["upperY"].Value<int>() };
                         var lowerPosition = new Position
-                        { X = value["lowerX"]!.Value<int>(), Y = value["lowerY"]!.Value<int>() };
+                        { X = value["lowerX"].Value<int>(), Y = value["lowerY"].Value<int>() };
                         newConnection.Ladder = new Ladder(upperPosition, lowerPosition);
                         continue;
                     }
 
-                    newConnection.Connections.Add(key.GetByName(), game.GetRoomById(value.Value<int>())!);
+                    newConnection.Connections.Add(key.GetByName(), game.GetRoomById(value.Value<int>()));
                 }
 
                 foreach (var connection in newConnection.Connections)

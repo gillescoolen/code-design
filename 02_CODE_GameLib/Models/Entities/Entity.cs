@@ -9,8 +9,8 @@ namespace CODE_GameLib.Models.Entities
         public virtual Entity Interact(IActor actor, Room room, Game game)
         {
             actor.AddToInventory(this);
-            var square = room.GetTileByEntity(this);
-            square.Entity = null;
+            var tile = room.GetTileByEntity(this);
+            tile.Entity = null;
             return this;
         }
 

@@ -15,9 +15,9 @@ namespace CODE_GameLib.Models.Connectors
             Lower = lower;
         }
 
-        public Position GetCorrectPosition(Direction side)
+        public Position GetPosition(Direction direction)
         {
-            return side == Direction.UPPER ? Upper : Lower;
+            return direction == Direction.UPPER ? Upper : Lower;
         }
     }
 }

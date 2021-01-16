@@ -4,7 +4,7 @@ namespace CODE_GameLib.Models.Connectors
 {
     public abstract class Door : IRenderable
     {
-        public virtual ConsoleColor Color { get; set; }
+        public ConsoleColor Color { get; set; } = ConsoleColor.White;
         protected bool Open { get; set; } = true;
 
         public virtual void Toggle()
