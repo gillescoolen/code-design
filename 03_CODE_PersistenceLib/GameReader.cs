@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using CODE_GameLib;
 using CODE_GameLib.Models;
-using CODE_GameLib.Models.Doors;
+using CODE_GameLib.Models.Connectors;
 using CODE_GameLib.Models.Entities;
 using CODE_GameLib.Utilities;
 using Newtonsoft.Json.Linq;
@@ -109,6 +109,16 @@ namespace CODE_FileSystem
                         newConnection.Door = factory.Create($"{value["type"]} door");
                         if (newConnection.Door == null) continue;
                         if (color.Length > 1) newConnection.Door.Color = GetConsoleColorByString(color);
+                        continue;
+                    }
+
+                    if (key == "ladder")
+                    {
+                        var upperPosition = new Position
+                        { X = value["upperX"]!.Value<int>(), Y = value["upperY"]!.Value<int>() };
+                        var lowerPosition = new Position
+                        { X = value["lowerX"]!.Value<int>(), Y = value["lowerY"]!.Value<int>() };
+                        newConnection.Ladder = new Ladder(upperPosition, lowerPosition);
                         continue;
                     }
 
