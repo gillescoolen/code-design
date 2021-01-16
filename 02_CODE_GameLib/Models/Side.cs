@@ -2,53 +2,55 @@ using CODE_GameLib.Models.Entities;
 
 namespace CODE_GameLib.Models
 {
-    public enum Side
+    public enum Direction
     {
         NORTH,
         EAST,
         SOUTH,
-        WEST
+        WEST,
+        UPPER,
+        LOWER
     }
 
     public static class SideExtension
     {
-        public static Position GetStep(this Side direction)
+        public static Position GetStep(this Direction direction)
         {
             switch (direction)
             {
-                case Side.NORTH:
+                case Direction.NORTH:
                     return new Position { X = 0, Y = -1 };
-                case Side.EAST:
+                case Direction.EAST:
                     return new Position { X = 1, Y = 0 };
-                case Side.SOUTH:
+                case Direction.SOUTH:
                     return new Position { X = 0, Y = 1 };
-                case Side.WEST:
+                case Direction.WEST:
                     return new Position { X = -1, Y = 0 };
                 default:
                     return new Position { X = 0, Y = 0 };
             }
         }
 
-        public static Side GetOpposite(this Side direction)
+        public static Direction GetOpposite(this Direction direction)
         {
             switch (direction)
             {
-                case Side.NORTH:
-                    return Side.SOUTH;
-                case Side.EAST:
-                    return Side.WEST;
-                case Side.SOUTH:
-                    return Side.NORTH;
-                case Side.WEST:
-                    return Side.EAST;
+                case Direction.NORTH:
+                    return Direction.SOUTH;
+                case Direction.EAST:
+                    return Direction.WEST;
+                case Direction.SOUTH:
+                    return Direction.NORTH;
+                case Direction.WEST:
+                    return Direction.EAST;
                 default:
-                    return Side.SOUTH;
+                    return Direction.SOUTH;
             }
         }
 
-        public static Side GetByName(this string direction)
+        public static Direction GetByName(this string direction)
         {
-            return (Side)System.Enum.Parse(typeof(Side), direction);
+            return (Direction)System.Enum.Parse(typeof(Direction), direction);
         }
     }
 }
