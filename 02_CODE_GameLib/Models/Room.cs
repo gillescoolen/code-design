@@ -28,15 +28,17 @@ namespace CODE_GameLib.Models
                 for (var x = 0; x <= Width - 1; ++x)
                 {
                     var position = new Position { X = x, Y = y };
-                    var tile = new Tile { Entity = IsWall(x, y) ? new Wall() : null, Position = position };
+                    var entity = x == Width - 1 || y == Height - 1 || y == 0 || x == 0 ? new Wall() : null;
+
+                    var tile = new Tile
+                    {
+                        Entity = entity,
+                        Position = position
+                    };
+
                     Tiles.Add(position, tile);
                 }
             }
-        }
-
-        private bool IsWall(int x, int y)
-        {
-            return x == Width - 1 || y == Height - 1 || y == 0 || x == 0;
         }
 
         public Tile GetTileByPosition(int x, int y)
