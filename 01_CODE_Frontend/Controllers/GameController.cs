@@ -54,9 +54,9 @@ namespace CODE_Frontend.Controllers
             Program.Game.ToggleDoorCheat();
         }
 
-        public void ToggleDieCheat()
+        public void ToggleImmortality()
         {
-            Program.Game.ToggleDieCheat();
+            Program.Game.ToggleImmortality();
         }
     }
 }

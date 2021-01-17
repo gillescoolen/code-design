@@ -23,7 +23,7 @@ namespace CODE_GameLib.Models
             if (connection.Value == null) return null;
 
             currentRoom.RemovePlayer();
-            connection.Value.SpawnPlayer(Ladder != null ? Ladder.GetCorrectPosition(connection.Key) : connection.Value.GetSpawnPosition(connection.Key.GetOpposite()), player);
+            connection.Value.PlaceActor(Ladder != null ? Ladder.GetPosition(connection.Key) : connection.Value.GetSpawnPosition(connection.Key.GetOpposite()), player);
 
             return connection;
         }

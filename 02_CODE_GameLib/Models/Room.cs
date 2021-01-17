@@ -28,7 +28,7 @@ namespace CODE_GameLib.Models
                 for (var x = 0; x <= Width - 1; ++x)
                 {
                     var position = new Position { X = x, Y = y };
-                    var tile = new Tile(position) { Entity = IsWall(x, y) ? new Wall() : null, Position = position };
+                    var tile = new Tile { Entity = IsWall(x, y) ? new Wall() : null, Position = position };
                     Tiles.Add(position, tile);
                 }
             }
@@ -108,24 +108,12 @@ namespace CODE_GameLib.Models
             Position position;
 
             if (connection.Ladder == null) position = GetSpawnPosition(direction);
-            else position = connection.Ladder.GetCorrectPosition(connection.Connections.First(c => c.Value == this).Key);
+            else position = connection.Ladder.GetPosition(connection.Connections.First(c => c.Value == this).Key);
 
             var tile = GetTileByPosition(position.X, position.Y);
 
             tile.Entity = null;
             tile.Connection = connection;
-        }
-
-        public List<Connection> GetConnections()
-        {
-            return Tiles.Where(tile => tile.Value.Connection != null)
-                .Select(tile => tile.Value.Connection)
-                .ToList()!;
-        }
-
-        public void SpawnPlayer(Position position, Player player)
-        {
-            Tiles[position].Actor = player;
         }
 
         public void RemovePlayer()
@@ -139,7 +127,7 @@ namespace CODE_GameLib.Models
 
         public Position GetPlayerPosition()
         {
-            return Tiles.FirstOrDefault(e => e.Value.Actor != null).Key;
+            return Tiles.FirstOrDefault(e => e.Value.Actor is Player).Key;
         }
     }
 }

@@ -66,40 +66,41 @@ namespace CODE_GameLib
             return entity;
         }
 
-        public void Move(Position movePosition, bool enemyMovement = false, bool isTurn = true)
+        public void Move(Position position, bool enemyMovement = false, bool isTurn = true)
         {
-            var currentRoom = GetCurrentRoom();
+            var room = GetCurrentRoom();
 
-            Tile? tile = null;
+            Tile tile = null;
 
             if (!enemyMovement || isTurn)
-                tile = Player.Move(currentRoom, movePosition);
+                tile = Player.Move(room, position);
 
-            if (enemyMovement || isTurn)
-                currentRoom.MoveEnemies(this);
+            if (enemyMovement || isTurn) room.MoveEnemies(this);
 
             if (tile == null || !UseConnection(tile) && UseEntity(tile) == null)
                 Notify(this);
         }
-        
+
         public void HitEnemies()
         {
-            var currentRoom = GetCurrentRoom();
-            var playerPosition = currentRoom.GetPlayerPosition()!;
+            var room = GetCurrentRoom();
+            var position = room.GetPlayerPosition()!;
 
             var possiblePositions = new List<Position>
             {
-                new Position { X = playerPosition.X + 1, Y = playerPosition.Y },
-                new Position { X = playerPosition.X - 1, Y = playerPosition.Y },
-                new Position { X = playerPosition.X, Y = playerPosition.Y - 1 },
-                new Position { X = playerPosition.X, Y = playerPosition.Y + 1 }
+                new Position { X = position.X + 1, Y = position.Y },
+                new Position { X = position.X - 1, Y = position.Y },
+                new Position { X = position.X, Y = position.Y - 1 },
+                new Position { X = position.X, Y = position.Y + 1 }
             };
 
-            foreach (var enemy in currentRoom.GetEnemies())
+            foreach (var enemy in room.GetEnemies())
             {
                 if (!possiblePositions.Contains(enemy.CurrentPosition)) continue;
-                var newHealth = enemy.Hurt(1);
-                if (newHealth <= 0) GetCurrentRoom().RemoveEnemy(enemy.CurrentPosition);
+
+                var lives = enemy.Hurt(1);
+                
+                if (lives <= 0) GetCurrentRoom().RemoveEnemy(enemy.CurrentPosition);
             }
 
             Notify(this);
@@ -110,9 +111,9 @@ namespace CODE_GameLib
             Player.CanOpenDoors = !Player.CanOpenDoors;
         }
 
-        public void ToggleDieCheat()
+        public void ToggleImmortality()
         {
-            Player.CanDie = !Player.CanDie;
+            Player.IsImmortal = !Player.IsImmortal;
         }
     }
 }

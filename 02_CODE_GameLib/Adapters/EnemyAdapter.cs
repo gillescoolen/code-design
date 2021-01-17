@@ -10,7 +10,7 @@ namespace CODE_GameLib.Adapters
 {
     public class EnemyAdapter : IActor
     {
-        private readonly Enemy enemy;
+        private readonly Enemy Enemy;
         public ConsoleColor Color { get; set; } = ConsoleColor.White;
         public int Lives { get; private set; }
         public Position CurrentPosition { get; private set; }
@@ -19,39 +19,39 @@ namespace CODE_GameLib.Adapters
 
         public EnemyAdapter(Enemy enemy)
         {
-            this.enemy = enemy;
-            Lives = this.enemy.NumberOfLives;
-            CurrentPosition = new Position { X = this.enemy.CurrentXLocation, Y = this.enemy.CurrentYLocation };
+            Enemy = enemy;
+            Lives = Enemy.NumberOfLives;
+            CurrentPosition = new Position { X = Enemy.CurrentXLocation, Y = Enemy.CurrentYLocation };
             PreviousPosition = CurrentPosition;
         }
 
         public Tile? Move(Room room, Position movePosition)
         {
             PreviousPosition = CurrentPosition;
-            enemy.Move();
+            Enemy.Move();
 
             var position = new Position
             {
-                X = enemy.CurrentXLocation,
-                Y = enemy.CurrentYLocation
+                X = Enemy.CurrentXLocation,
+                Y = Enemy.CurrentYLocation
             };
 
             var tile = room.Tiles[position];
-            
+
             if (tile.Entity != null && !tile.Entity.IsInteractable())
             {
-                ResetPosition();
+                Back();
                 return null;
             }
 
             if (tile.Actor is Player)
             {
-                ResetPosition();
+                Back();
                 tile.Actor.Hurt(1);
                 return null;
             }
-            
-            CurrentPosition = new Position { X = enemy.CurrentXLocation, Y = enemy.CurrentYLocation };
+
+            CurrentPosition = new Position { X = Enemy.CurrentXLocation, Y = Enemy.CurrentYLocation };
 
             room.RemoveEnemy(PreviousPosition);
             room.PlaceActor(position, this);
@@ -61,26 +61,27 @@ namespace CODE_GameLib.Adapters
 
         public int Hurt(int damage)
         {
-            enemy.GetHurt(damage);
+            Enemy.GetHurt(damage);
             return Lives -= damage;
         }
 
         public List<Entity> GetInventory<T>()
         {
-            return Inventory.Where(i => i is T).ToList();
+            return Inventory.Where(i => i is T)
+                .ToList();
         }
 
-        public void AddToInventory(Entity Entity)
+        public void AddToInventory(Entity item)
         {
-            Inventory.Add(Entity);
+            Inventory.Add(item);
         }
 
-        private void ResetPosition()
+        private void Back()
         {
-            enemy.CurrentXLocation = PreviousPosition.X;
-            enemy.CurrentYLocation = PreviousPosition.Y;
-            CurrentPosition.X = enemy.CurrentXLocation;
-            CurrentPosition.Y = enemy.CurrentYLocation;
+            Enemy.CurrentXLocation = PreviousPosition.X;
+            Enemy.CurrentYLocation = PreviousPosition.Y;
+            CurrentPosition.X = Enemy.CurrentXLocation;
+            CurrentPosition.Y = Enemy.CurrentYLocation;
         }
     }
 }

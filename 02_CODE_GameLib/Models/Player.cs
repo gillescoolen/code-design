@@ -9,18 +9,21 @@ namespace CODE_GameLib.Models
     public class Player : IActor
     {
         public List<Entity> Inventory { get; } = new List<Entity>();
-        public readonly Position StartPosition;
         public int StartRoomId { get; set; }
         public int Lives { get; set; }
         public ConsoleColor Color { get; set; } = ConsoleColor.Blue;
         public bool CanOpenDoors { get; set; }
-        public bool CanDie { get; set; } = true;
+        public bool IsImmortal { get; set; } = false;
+        public Position CurrentPosition { get; private set; }
+        public Position PreviousPosition { get; private set; }
+
 
         public Player(int startRoomId, Position position, int lives)
         {
             StartRoomId = startRoomId;
-            StartPosition = position;
             Lives = lives;
+            CurrentPosition = position;
+            PreviousPosition = position;
         }
 
         public List<Entity> GetInventory<T>()
@@ -30,41 +33,44 @@ namespace CODE_GameLib.Models
 
         public Tile Move(Room room, Position movePosition)
         {
-            var current = room.GetPlayerPosition()!;
+            var currentPosition = room.GetPlayerPosition()!;
+            CurrentPosition = currentPosition;
 
-            var position = new Position
+            //Bepaal de mogelijk nieuwe positie
+            var newPosition = new Position
             {
-                X = current.X + movePosition.X,
-                Y = current.Y + movePosition.Y
+                X = currentPosition.X + movePosition.X,
+                Y = currentPosition.Y + movePosition.Y
             };
 
-            var currentSquare = room.Tiles[current];
+            var currentSquare = room.Tiles[currentPosition];
 
-            if (position.X < 0 || position.Y < 0 || position.Y >= room.Height || position.X >= room.Width)
-            {
+            if (newPosition.X < 0 || newPosition.Y < 0 || newPosition.Y >= room.Height || newPosition.X >= room.Width)
                 return currentSquare;
-            }
 
-            var tile = room.Tiles[position];
-            var connection = tile.Connection;
+            var position = room.Tiles[newPosition];
+            var connection = position.Connection;
 
-            if (tile.Entity != null && !tile.Entity.IsInteractable() || connection?.Door != null && !connection.Door.CanEnter(this)) return null;
+            if (position.Entity != null && !position.Entity.IsInteractable() ||
+                connection?.Door != null && !connection.Door.CanEnter(this)) return null;
 
-            if (tile.Actor is EnemyAdapter)
+            if (position.Actor is EnemyAdapter)
             {
                 Hurt(1);
                 return null;
             }
 
             room.RemovePlayer();
-            room.SpawnPlayer(position, this);
+            room.PlaceActor(newPosition, this);
+            PreviousPosition = CurrentPosition;
+            CurrentPosition = newPosition;
 
-            return tile;
+            return position;
         }
 
         public int Hurt(int damage)
         {
-            return Lives -= damage;
+            return IsImmortal ? 0 : Lives -= damage;
         }
 
         public void AddToInventory(Entity entity)

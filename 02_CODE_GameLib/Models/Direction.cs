@@ -52,6 +52,17 @@ namespace CODE_GameLib.Models
             }
         }
 
+        public static Direction GetPrevious(this Position currentPosition, Position previousPosition)
+        {
+            if (currentPosition.X == previousPosition.X + 1) return Direction.EAST;
+
+            if (currentPosition.X == previousPosition.X - 1) return Direction.WEST;
+
+            if (currentPosition.Y == previousPosition.Y + 1) return Direction.SOUTH;
+
+            return Direction.NORTH;
+        }
+
         public static Direction GetByName(this string direction)
         {
             return (Direction)System.Enum.Parse(typeof(Direction), direction);

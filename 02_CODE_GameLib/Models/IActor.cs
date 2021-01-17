@@ -1,4 +1,3 @@
-#nullable enable
 using System.Collections.Generic;
 using CODE_GameLib.Models.Entities;
 
@@ -8,9 +7,11 @@ namespace CODE_GameLib.Models
     {
         public List<Entity> Inventory { get; }
         public int Lives { get; }
-        public Tile? Move(Room room, Position movePosition);
+        public Tile Move(Room room, Position movePosition);
         public int Hurt(int damage);
         public List<Entity> GetInventory<T>();
         public void AddToInventory(Entity entity);
+        public Position CurrentPosition { get; }
+        public Position PreviousPosition { get; }
     }
 }

@@ -20,11 +20,12 @@ namespace CODE_Frontend.Views
             { typeof(Key), 'K' },
             { typeof(PressurePlate), 'T' },
             { typeof(DisappearingBoobietrap), '@' },
-            { typeof(Ladder), 'L' },
             { typeof(Player), 'X' },
             { typeof(ClosingGateDoor), 'u' },
             { typeof(ToggleDoor), '┴' },
-            { typeof(EnemyAdapter), 'E' }
+            { typeof(Ladder), 'L' },
+            { typeof(EnemyAdapter), 'E' },
+            { typeof(Ice), '~' }
         };
 
         public GameView(GameController controller) : base(controller,
@@ -33,7 +34,7 @@ namespace CODE_Frontend.Views
             new Input((int)ConsoleKey.RightArrow, () => controller.Move(Direction.EAST)),
             new Input((int)ConsoleKey.DownArrow, () => controller.Move(Direction.SOUTH)),
             new Input((int)ConsoleKey.Spacebar, () => controller.HitEnemies()),
-            new Input((int) ConsoleKey.L,() => controller.ToggleDieCheat()),
+            new Input((int)ConsoleKey.L, () => controller.ToggleImmortality()),
             new Input((int)ConsoleKey.D, () => controller.ToggleDoorCheat())
         )
         {
@@ -48,6 +49,7 @@ namespace CODE_Frontend.Views
 
                 Console.ForegroundColor = tile.GetVisual()?.Color ?? ConsoleColor.White;
                 Console.Write(character);
+                Console.Write(' ');
                 Console.ResetColor();
 
                 if (position.X == Controller.GetCurrentRoom().Width - 1)
