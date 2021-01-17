@@ -1,13 +1,27 @@
 @startuml temple_of_doom
-enum Side {
+enum Direction {
   NORTH
   EAST
   SOUTH
   WEST
+  UPPER
+  LOWER
 }
 
 interface IRenderable {
     + Color: ConsoleColor
+}
+
+interface IActor {
+    - Inventory: List<Entity>
+    + CurrentPosition: Position
+    + PreviousPosition: Position
+    + StartRoomId: Integer
+    + Lives: Integer
+    + GetInventory<T>(): List<entity>
+    + Move(Room room, Position movePosition): Tile
+    + Hurt(int damage): Integer
+    + AddToInventory(Entity entity)
 }
 
 class Factory {
@@ -29,7 +43,7 @@ class UnSubscriber {
 }
 
 class Game {
-    - Rlayer: Player
+    - Player: Player
     - Rooms: List<Room>
     + GetCurrentRoom(): Room
     + GetRoomById(): Room
@@ -59,9 +73,9 @@ class Room {
     - IsWall()
     + GetTileByPosition(int x, int y): Tile
     + GetTilesByDoor<T>(): List<Tile> 
-    + GetSpawnPosition(Side direction): Position
-    + GetTileByItem(Entity entity): Tile
-    + AddConnection(Side direction, Connection connection)
+    + GetSpawnPosition(Direction direction): Position
+    + GetTileByEntity(Entity entity): Tile
+    + AddConnection(Direction direction, Connection connection)
     + GetConnections(): List<Connection>
     + SpawnPlayer(Position position, Player player)
     + GetPlayerPosition(): Position
@@ -76,20 +90,38 @@ class Position {
 
 class Player {
     - Inventory: List<Entity>
-    + StartPosition: Position
+    + CurrentPosition: Position
+    + PreviousPosition: Position
     + StartRoomId: Integer
     + Lives: Integer
-    + GetInventory<T>
+    + GetInventory<T>(): List<Entity>
     + Move(Room room, Position movePosition): Tile
     + Hurt(int damage): Integer
-    + AddToInventory(Entity item)
+    + AddToInventory(Entity entity)
     + GetAmountOfSankaraStones(): Integer
 }
 
+class EnemyAdapter {
+    - Inventory: List<Entity>
+    - Enemy: Enemy
+    + Color: ConsoleColor
+    + CurrentPosition: Position
+    + PreviousPosition: Position
+    + StartRoomId: Integer
+    + Lives: Integer
+    + GetInventory<T>(): List<Entity>
+    + AddToInventory(Entity entity)
+    + Move(Room room, Position movePosition): Tile
+    + Hurt(int damage): Integer
+    - Back()
+}
+
+
 class Connection {
     + Door: Door
-    + Connections: Dictionary<Side, Room>
-    + Enter(Room currentRoom, Player player): KeyValuePair<Side, Room>
+    + Ladder: Ladder
+    + Connections: Dictionary<Direction, Room>
+    + Enter(Room currentRoom, Player player): KeyValuePair<Direction, Room>
 }
 
 abstract Entity {
@@ -104,6 +136,12 @@ class PressurePlate {}
 class Key {}
 class Boobietrap {}
 class DisappearingBoobietrap {}
+class Ice {}
+class Ladder {
+    - Upper: Position
+    - Lower: Position
+    + GetPosition(Direction direction)
+}
 
 abstract Door {
     # Open: Boolean
@@ -141,15 +179,18 @@ class Program {
 
 Game --|> Provider
 Player --|> IRenderable
+EnemyAdapter --|> IRenderable
 Connection --|> IRenderable
 Entity --|> IRenderable
 Door --|> IRenderable
+Ladder --|> IRenderable
 
 Wall --|> Entity
 SankaraStone --|> Entity
 PressurePlate --|> Entity
 Key --|> Entity
 Boobietrap --|> Entity
+Ice --|> Entity
 DisappearingBoobietrap --|> Boobietrap
 
 ToggleDoor --|> Door
@@ -167,15 +208,18 @@ Game --- Connection
 Game --- Entity
 Game --- Position
 
+Ladder --- Position
+
 Player --- Position
+EnemyAdapter --- Position
 
 Provider --- UnSubscriber
 
 Program --- UnSubscriber
 Program --- Game
 
-Side --- Room
-Side --- Connection
+Direction --- Room
+Direction --- Connection
 
 GameReader --- Game
 GameReader --- Player
