@@ -1,0 +1,23 @@
+@startuml temple_of_doom
+class GameReader {
+    + Fetch(location: string): Game
+    + Read(json: string): Game
+}
+
+interface IJSONParser {
+    + Parse(location: string)
+}
+
+class DatabaseJSONParser {
+    + Parse(location: string)
+}
+
+class FileJSONParser {
+    + Parse(location: string)
+}
+
+GameReader --- IJSONParser
+
+DatabaseJSONParser --|> IJSONParser
+FileJSONParser --|> IJSONParser
+@enduml
