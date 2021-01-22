@@ -1,2 +1,2 @@
-# Temple of Doom
-## Version A
+## Temple of Doom
+### Version A

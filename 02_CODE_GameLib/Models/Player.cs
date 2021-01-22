@@ -36,7 +36,6 @@ namespace CODE_GameLib.Models
             var currentPosition = room.GetPlayerPosition()!;
             CurrentPosition = currentPosition;
 
-            //Bepaal de mogelijk nieuwe positie
             var newPosition = new Position
             {
                 X = currentPosition.X + movePosition.X,

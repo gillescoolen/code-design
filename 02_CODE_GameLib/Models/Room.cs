@@ -61,7 +61,6 @@ namespace CODE_GameLib.Models
                 .ToList();
         }
 
-        //Beweeg alle enemies in de kamer.
         public void MoveEnemies(Game game)
         {
             foreach (var enemy in GetEnemies())
